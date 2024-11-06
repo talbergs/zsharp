@@ -1,0 +1,29 @@
+layout {
+    pane command="htop"
+    pane {
+        command "htop"
+        cwd "/home"
+    }
+    pane split_direction="vertical" {
+        pane
+        pane
+    }
+    pane size=5
+    pane split_direction="vertical" {
+        pane size="80%"
+        pane size="20%"
+    }
+    pane size=4
+    pane_template name="follow-log" command="tail"
+    follow-log {
+        args "-f" "/tmp/zabbix_server.log"
+    }
+    follow-log {
+        args "-f" "php.error.log"
+        cwd "/tmp"
+    }
+
+    pane size=2 borderless=true {
+        plugin location="zellij:status-bar"
+    }
+}
