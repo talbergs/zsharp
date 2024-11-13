@@ -1,0 +1,206 @@
+Configuration:
+  -h, --help              display this help and exit
+      --help=short        display options specific to this package
+      --help=recursive    display the short help of all the included packages
+  -V, --version           display version information and exit
+  -q, --quiet, --silent   do not print 'checking ...' messages
+      --cache-file=FILE   cache test results in FILE [disabled]
+  -C, --config-cache      alias for '--cache-file=config.cache'
+  -n, --no-create         do not create output files
+      --srcdir=DIR        find the sources in DIR [configure dir or '..']
+
+Installation directories:
+  --prefix=PREFIX         install architecture-independent files in PREFIX
+                          [/usr/local]
+  --exec-prefix=EPREFIX   install architecture-dependent files in EPREFIX
+                          [PREFIX]
+
+By default, 'make install' will install all the files in
+'/usr/local/bin', '/usr/local/lib' etc.  You can specify
+an installation prefix other than '/usr/local' using '--prefix',
+for instance '--prefix=$HOME'.
+
+For better control, use the options below.
+
+Fine tuning of the installation directories:
+  --bindir=DIR            user executables [EPREFIX/bin]
+  --sbindir=DIR           system admin executables [EPREFIX/sbin]
+  --libexecdir=DIR        program executables [EPREFIX/libexec]
+  --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
+  --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
+  --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
+  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
+  --libdir=DIR            object code libraries [EPREFIX/lib]
+  --includedir=DIR        C header files [PREFIX/include]
+  --oldincludedir=DIR     C header files for non-gcc [/usr/include]
+  --datarootdir=DIR       read-only arch.-independent data root [PREFIX/share]
+  --datadir=DIR           read-only architecture-independent data [DATAROOTDIR]
+  --infodir=DIR           info documentation [DATAROOTDIR/info]
+  --localedir=DIR         locale-dependent data [DATAROOTDIR/locale]
+  --mandir=DIR            man documentation [DATAROOTDIR/man]
+  --docdir=DIR            documentation root [DATAROOTDIR/doc/zabbix]
+  --htmldir=DIR           html documentation [DOCDIR]
+  --dvidir=DIR            dvi documentation [DOCDIR]
+  --pdfdir=DIR            pdf documentation [DOCDIR]
+  --psdir=DIR             ps documentation [DOCDIR]
+
+Program names:
+  --program-prefix=PREFIX            prepend PREFIX to installed program names
+  --program-suffix=SUFFIX            append SUFFIX to installed program names
+  --program-transform-name=PROGRAM   run sed PROGRAM on installed program names
+
+System types:
+  --build=BUILD     configure for building on BUILD [guessed]
+  --host=HOST       cross-compile to build programs to run on HOST [BUILD]
+
+Optional Features:
+  --disable-option-checking  ignore unrecognized --enable/--with options
+  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --enable-silent-rules   less verbose build output (undo: "make V=1")
+  --disable-silent-rules  verbose build output (undo: "make V=0")
+  --enable-dependency-tracking
+                          do not reject slow dependency extractors
+  --disable-dependency-tracking
+                          speeds up one-time build
+  --disable-largefile     omit support for large files
+  --enable-static         Build statically linked binaries
+  --enable-static-libs    Build statically linked binaries with selected libs from default folders
+  --enable-server         Turn on build of Zabbix server
+  --enable-proxy          Turn on build of Zabbix proxy
+  --enable-agent          Turn on build of Zabbix agent and client utilities
+  --enable-agent2         Turn on build of Zabbix agent 2
+  --enable-webservice         Turn on build of Zabbix web service
+  --enable-java           Turn on build of Zabbix Java gateway
+  --enable-ipv6           Turn on support of IPv6
+  --enable-year2038       support timestamps after 2038
+
+Optional Packages:
+  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-mysql[=ARG]      use MySQL client library [default=no], optionally
+                          specify path to mysql_config
+  --with-postgresql[=ARG] use PostgreSQL library [default=no], optionally
+                          specify path to pg_config
+  --with-sqlite3[=ARG]    use SQLite 3 library [default=no], optionally
+                          specify the prefix for sqlite3 library
+
+If you want to use XML library:
+  --with-libxml2[=ARG]    use libxml2 client library [default=no], see
+                          PKG_CONFIG_PATH environment variable to specify .pc
+                          file location
+
+If you want to use unixODBC library:
+  --with-unixodbc[=ARG]   use ODBC driver against unixODBC package
+                          [default=no], optionally specify full path to
+                          odbc_config binary.
+
+If you want to use Net-SNMP library:
+  --with-net-snmp[=ARG]   use Net-SNMP package [default=no], optionally
+                          specify path to net-snmp-config
+
+If you want to use SSH2 based checks:
+  --with-ssh2[=DIR]       use SSH2 package [default=no], DIR is the SSH2
+                          library install directory.
+
+If you want to use SSH based checks:
+  --with-ssh[=DIR]        use SSH package [default=no], DIR is the SSH library
+                          install directory.
+
+If you want to check IPMI devices:
+  --with-openipmi[=DIR]   Include OPENIPMI support [default=no]. DIR is the
+                          OPENIPMI base install directory, default is to
+                          search through a number of common places for the
+                          OPENIPMI files.
+
+If you want to specify zlib installation directories:
+  --with-zlib[=DIR]       use zlib from given base install directory (DIR),
+                          default is to search through a number of common
+                          places for the zlib files.
+  --with-zlib-include=DIR use zlib include headers from given path.
+  --with-zlib-lib=DIR     use zlib libraries from given path.
+
+If you want to specify pthread installation directories:
+  --with-libpthread[=DIR] use libpthread from given base install directory
+                          (DIR), default is to search through a number of
+                          common places for the libpthread files.
+  --with-libpthread-include[=DIR]
+                          use libpthread include headers from given path.
+  --with-libpthread-lib[=DIR]
+                          use libpthread libraries from given path.
+
+If you want to specify libevent installation directories:
+  --with-libevent[=DIR]   use libevent from given base install directory
+                          (DIR), default is to search through a number of
+                          common places for the libevent files.
+  --with-libevent-include[=DIR]
+                          use libevent include headers from given path.
+  --with-libevent-lib[=DIR]
+                          use libevent libraries from given path.
+
+If you want to use encryption provided by GnuTLS library:
+  --with-gnutls[=DIR]     use GnuTLS package [default=no], DIR is the
+                          libgnutls install directory.
+
+If you want to use encryption provided by OpenSSL library:
+  --with-openssl[=DIR]    use OpenSSL package [default=no], DIR is the libssl
+                          and libcrypto install directory.
+
+If you want to use MODBUS based checks:
+  --with-libmodbus[=DIR]  use MODBUS package [default=no], DIR is the MODBUS
+                          library install directory.
+
+If you want to check LDAP servers:
+  --with-ldap[=DIR]       Include LDAP support [default=no]. DIR is the LDAP
+                          base install directory, default is to search through
+                          a number of common places for the LDAP files.
+
+If you want to use cURL library:
+  --with-libcurl[=DIR]    use cURL package [default=no], optionally specify
+                          path to curl-config
+
+If you want to specify libpcre installation directories:
+  --with-libpcre[=DIR]    use libpcre from given base install directory (DIR),
+                          default is to search through a number of common
+                          places for the libpcre files.
+  --with-libpcre-include[=DIR]
+                          use libpcre include headers from given path.
+  --with-libpcre-lib[=DIR]
+                          use libpcre libraries from given path.
+
+If you want to specify libpcre2 installation directories:
+  --with-libpcre2[=DIR]   use libpcre2 from given base install directory
+                          (DIR), default is to search through a number of
+                          common places for the libpcre2 files.
+  --with-libpcre2-include[=DIR]
+                          use libpcre2 include headers from given path.
+  --with-libpcre2-lib[=DIR]
+                          use libpcre2 libraries from given path.
+
+If you want to specify iconv installation directories:
+  --with-iconv[=DIR]      use iconv from given base install directory (DIR),
+                          default is to search through a number of common
+                          places for the iconv files.
+  --with-iconv-include[=DIR]
+                          use iconv include headers from given path.
+  --with-iconv-lib[=DIR]  use iconv libraries from given path.
+
+Override default thread stack size:
+  --with-stacksize=STACKSIZE
+                          Set default thread stack size in kilobytes.
+
+Some influential environment variables:
+  CC          C compiler command
+  CFLAGS      C compiler flags
+  LDFLAGS     linker flags, e.g. -L<lib dir> if you have libraries in a
+              nonstandard directory <lib dir>
+  LIBS        libraries to pass to the linker, e.g. -l<library>
+  CPPFLAGS    (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if
+              you have headers in a nonstandard directory <include dir>
+  CXX         C++ compiler command
+  CXXFLAGS    C++ compiler flags
+
+Use these variables to override the choices made by 'configure' or to help
+it to find libraries and programs with nonstandard names/locations.
+
+Report bugs to the package provider.

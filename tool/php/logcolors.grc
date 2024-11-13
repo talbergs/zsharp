@@ -1,0 +1,14 @@
+pattern=ERROR
+fg=red
+
+# Colorize 'WARNING' messages in yellow
+pattern=WARNING
+fg=yellow
+
+# Colorize 'INFO' messages in green
+pattern=INFO
+fg=green
+
+# Colorize 'DEBUG' messages in blue
+pattern=DEBUG
+fg=blue

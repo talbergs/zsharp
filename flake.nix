@@ -1,27 +1,26 @@
 {
-  description = "A very basic flake";
+  description = "The tool belt";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    zjstatus.url = "github:dj95/zjstatus";
-    system-db.url = "github:talbergs/system-db";
   };
 
   outputs =
     {
-      self,
       nixpkgs,
-      zjstatus,
-      system-db,
+      ...
     }:
     let
-      pkgs = import nixpkgs {
-        system = "x86_64-linux";
-      };
+      tool = ./tool;
+      pkgs = import nixpkgs { system = "x86_64-linux"; };
+      layout_template = import ./layout_template.nix { inherit pkgs tool nixpkgs; };
+      layout_generator = import ./layout_generator.nix { inherit pkgs layout_template; };
     in
     {
 
-      packages.x86_64-linux.default = import ./default.nix { inherit pkgs system-db; };
+      packages.x86_64-linux.default = import ./default.nix { inherit pkgs layout_generator; };
+      packages.x86_64-linux.layout_generator = layout_generator;
+      packages.x86_64-linux.layout_template = layout_template;
 
     };
 }

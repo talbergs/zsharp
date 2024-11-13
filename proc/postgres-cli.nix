@@ -1,9 +1,10 @@
 {
   dbport ? "5432",
   dbname ? "postgres",
+  upstream ? <nixpkgs>
 }:
 let
-  pkgs = import <nixpkgs> { };
+  pkgs = import upstream { };
 in
 pkgs.mkShell {
   packages = with pkgs; [
@@ -11,6 +12,15 @@ pkgs.mkShell {
     postgresql
   ];
   shellHook = ''
-    psql --host=0.0.0.0 --port=${dbport} --dbname=${dbname}
+    build() {
+      psql --host=0.0.0.0 --port=${dbport} --dbname=${dbname}
+    }
+
+    fg() {
+      if read -r -p "Start psql client?"
+      then
+        build
+      fi
+    }
   '';
 }

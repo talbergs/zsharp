@@ -1,9 +1,10 @@
 {
   pgdata,
   dbport ? "5432",
+  upstream ? <nixpkgs>
 }:
 let
-  pkgs = import <nixpkgs> { };
+  pkgs = import upstream { };
 in
 pkgs.mkShell {
   packages = with pkgs; [
@@ -41,6 +42,13 @@ pkgs.mkShell {
         start
 
       tail -F $PGDATA/postgres.log
+    }
+
+    fg() {
+      if read -r -p "Start postgres cluster in ${pgdata}?"
+      then
+        fg_postgres
+      fi
     }
   '';
 }
