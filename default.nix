@@ -1,7 +1,7 @@
 { pkgs, layout_generator, ... }:
 with pkgs.lib;
 pkgs.writeShellApplication {
-  name = "zashboard";
+  name = "zsharp";
   runtimeInputs = with pkgs; [
     zellij
     layout_generator

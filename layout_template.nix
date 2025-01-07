@@ -3,7 +3,7 @@
 , nixpkgs # path to nix store
 , ... }:
 pkgs.writeTextFile {
-  name = "zashboard.kdl";
+  name = "zsharp.kdl";
   text = ''
     layout {
         default_tab_template {
@@ -21,7 +21,7 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Server" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zashboard/server" \
+                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/server" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_server.nix}"
@@ -30,7 +30,7 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Proxy" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zashboard/proxy" \
+                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/proxy" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_proxy.nix}"
@@ -41,7 +41,7 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Agent2" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zashboard/agent2" \
+                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/agent2" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_agent2.nix}"
@@ -50,7 +50,7 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Agent" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zashboard/agent" \
+                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/agent" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_agent.nix}"
@@ -63,7 +63,7 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Server process" size="30%" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zashboard/server" \
+                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/server" \
                         "--argstr" "dbuser" "{{ $DB_USER }}" \
                         "--argstr" "dbname" "{{ $DB_NAME }}" \
                         "--argstr" "upstream" "${nixpkgs}" \
@@ -72,21 +72,21 @@ pkgs.writeTextFile {
                 }
                 pane command="tail" borderless=true name="Server logs" {
                     args \
-                        "-F" "{{ $SOURCES }}/zashboard/server/zabbix_server.log"
+                        "-F" "{{ $SOURCES }}/zsharp/server/zabbix_server.log"
                 }
             }
             pane split_direction="horizontal" {
                 pane command="nix-shell" name="Agent2 process" size="30%" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zashboard/agent2" \
+                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/agent2" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_agent2_run.nix}"
                 }
                 pane command="tail" borderless=true name="Agent2 logs" {
                     args \
-                        "-F" "{{ $SOURCES }}/zashboard/agent2/zabbix_agent2.log"
+                        "-F" "{{ $SOURCES }}/zsharp/agent2/zabbix_agent2.log"
                 }
             }
         }
@@ -107,7 +107,7 @@ pkgs.writeTextFile {
                     "--run" "fg" \
                     "--argstr" "dbport" "{{ $DB_PORT }}" \
                     "--argstr" "dbname" "{{ $DB_NAME }}" \
-                    "--argstr" "scheme" "{{ $SOURCES }}/zashboard/dbschemes/postgresql.sql" \
+                    "--argstr" "scheme" "{{ $SOURCES }}/zsharp/dbschemes/postgresql.sql" \
                     "--argstr" "upstream" "${nixpkgs}" \
                     "--include" "nixpkgs=${nixpkgs}" \
                     "${./proc/postgres-apply.nix}"
@@ -126,7 +126,7 @@ pkgs.writeTextFile {
             pane cwd="{{ $SOURCES }}" command="nix-shell" name="Scheme" {
                 args \
                     "--run" "fg" \
-                    "--argstr" "prefix" "{{ $SOURCES }}/zashboard/dbschemes" \
+                    "--argstr" "prefix" "{{ $SOURCES }}/zsharp/dbschemes" \
                     "--argstr" "upstream" "${nixpkgs}" \
                     "--include" "nixpkgs=${nixpkgs}" \
                     "${./proc/zabbix_scheme.nix}"
@@ -186,7 +186,7 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="diff-locale-strings" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zashboard/locale_strings" \
+                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/locale_strings" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--argstr" "tool" "${tool}" \
                         "--include" "nixpkgs=${nixpkgs}" \
