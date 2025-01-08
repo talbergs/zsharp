@@ -7,7 +7,7 @@ pkgs.writeShellApplication {
     layout_generator
   ];
   text = ''
-    USAGE="Usage:  ''${CMD:=''${0##*/}} [(-s|--session)=NAME] [--sources=DIR] [--ui-root=DIR] [--db-name=NAME] [--db-port=PORT] [--ui-port=PORT]"
+    USAGE="Usage:  ''${CMD:=''${0##*/}} [(-s|--session)=NAME] [--sources=DIR] [--ui-root=DIR] [--db-name=NAME] [--db-port=PORT] [--ui-port=PORT] [--php-v(74|80|83|84)]"
 
     exit2 () { printf >&2 "%s:  %s: '%s'\n%s\n" "$CMD" "$1" "$2" "$USAGE"; exit 2; }
     check () { { [ "$1" != "$EOL" ] && [ "$1" != '--' ]; } || exit2 "missing argument" "$2"; }  # avoid infinite loop
