@@ -14,8 +14,8 @@
       map_supported_systems = function: nixpkgs.lib.genAttrs [
         "x86_64-linux"
         "aarch64-linux"
-        "x86_64-darvin"
-        "aarch64-darvin"
+        "x86_64-darwin"
+        "aarch64-darwin"
       ] (system: function nixpkgs.legacyPackages.${system});
 
       tool = ./tool;
