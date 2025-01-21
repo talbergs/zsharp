@@ -242,6 +242,23 @@ pkgs.writeTextFile {
 
             }
         }
+
+        tab name="Integration tests" split_direction="vertical" cwd="{{ $SOURCES }}" {
+            pane command="nix-shell" name="API tests" {
+                args \
+                    "--run" "fg" \
+                    "--argstr" "tool" "${tool}" \
+                    "--argstr" "sources" "{{ $SOURCES }}" \
+                    "--argstr" "uiroot" "{{ $UI_ROOT }}" \
+                    "--argstr" "scheme" "{{ $SOURCES }}/zsharp/dbschemes/postgresql.sql" \
+                    "--argstr" "dbport" "{{ $DB_PORT }}" \
+                    "--argstr" "dbname" "{{ $DB_NAME }}-test-api" \
+                    "--argstr" "dbuser" "{{ $DB_USER }}" \
+                    "--argstr" "upstream" "${nixpkgs}" \
+                    "--include" "nixpkgs=${nixpkgs}" \
+                    "${./proc/api_tests.nix}"
+            }
+        }
     }
   '';
 }
