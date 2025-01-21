@@ -50,10 +50,10 @@ pkgs.mkShell {
       echo "define('PHPUNIT_ERROR_LOG', '/tmp/api_test_error.log');" >> ./bootstrap.php
 
       (
-        if [[ ! -e /tmp/phpunit-8.5.40.phar ]]
+        if [[ ! -e /tmp/phpunit-8.5.41.phar ]]
         then
           cd /tmp/
-          ${pkgs.lib.getExe pkgs.wget} https://phar.phpunit.de/phpunit-8.5.40.phar
+          ${pkgs.lib.getExe pkgs.wget} https://phar.phpunit.de/phpunit-8.5.41.phar
         fi
       )
     }
@@ -102,7 +102,7 @@ pkgs.mkShell {
           fi
 
           nix run $PACKAGE -- \
-            /tmp/phpunit-8.5.40.phar $filter_arg \
+            /tmp/phpunit-8.5.41.phar $filter_arg \
               --bootstrap /tmp/api-tests/bootstrap.php \
               --configuration=${uiroot}/tests/phpunit.xml \
           ./tests/api_json/ApiJsonTests.php

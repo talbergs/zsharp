@@ -6,13 +6,13 @@ pkgs.mkShell {
   shellHook = ''
     build() {
       cd ${uiroot}/tests/unit
-      if [[ ! -e phpunit-8.5.40.phar ]]
+      if [[ ! -e phpunit-8.5.41.phar ]]
       then
-        ${pkgs.lib.getExe pkgs.wget} https://phar.phpunit.de/phpunit-8.5.40.phar
+        ${pkgs.lib.getExe pkgs.wget} https://phar.phpunit.de/phpunit-8.5.41.phar
       fi
 
       nix run github:fossar/nix-phps#php84 -- \
-        phpunit-8.5.40.phar \
+        phpunit-8.5.41.phar \
           --bootstrap=./bootstrap.php \
           --configuration=./phpunit.xml \
           ./include/
