@@ -77,7 +77,6 @@ pkgs.mkShell {
       export ZABBIX_REVISION=$(${getExe pkgs.git} rev-parse HEAD)
       touch ${prefix}/builds.log
       tail ${prefix}/builds.log
-      # tail ./create/src/schema.tmpl | grcat <(printf "%s\n%s" "regexp=(\d\d\d+)" "colors=red")
       echo "=== $PWD ==="
       if read -r -p "Build DB schema?"
       then

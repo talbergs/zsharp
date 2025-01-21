@@ -70,9 +70,13 @@ pkgs.writeTextFile {
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_server_run.nix}"
                 }
-                pane command="tail" borderless=true name="Server logs" {
+                pane command="nix-shell" borderless=true name="Server logs" {
                     args \
-                        "-F" "{{ $SOURCES }}/zsharp/server/zabbix_server.log"
+                        "--run" "colorizer:c" \
+                        "--argstr" "logfile" "{{ $SOURCES }}/zsharp/server/zabbix_server.log" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "--include" "nixpkgs=${nixpkgs}" \
+                    "${./proc/grc.nix}"
                 }
             }
             pane split_direction="horizontal" {
@@ -84,9 +88,13 @@ pkgs.writeTextFile {
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_agent2_run.nix}"
                 }
-                pane command="tail" borderless=true name="Agent2 logs" {
+                pane command="nix-shell" borderless=true name="Agent2 logs" {
                     args \
-                        "-F" "{{ $SOURCES }}/zsharp/agent2/zabbix_agent2.log"
+                        "--run" "colorizer:c" \
+                        "--argstr" "logfile" "{{ $SOURCES }}/zsharp/agent2/zabbix_agent2.log" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "--include" "nixpkgs=${nixpkgs}" \
+                    "${./proc/grc.nix}"
                 }
             }
         }
@@ -135,7 +143,7 @@ pkgs.writeTextFile {
 
         tab name="Runners:WEB" split_direction="vertical" cwd="{{ $SOURCES }}/ui" {
             pane split_direction="horizontal" {
-                pane {
+                pane  size="30%" {
                     name "PHP ({{ $PHP_VER }})"
                     command "nix-shell"
                     args \

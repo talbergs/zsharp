@@ -5,7 +5,7 @@ in
 with pkgs.lib;
 pkgs.mkShell {
   packages = with pkgs; [
-    grc
+    tailspin
   ];
   shellHook = ''
     build() {
@@ -26,8 +26,7 @@ pkgs.mkShell {
         -d memory_limit=4G \
         -d error_reporting=E_ALL \
         -d log_errors=On \
-        -d error_log=/tmp/php.error.${dbname}.log \
-      | 2>&1 grcat <(printf "regexp=(^\[.*?\]\s(.*?)\s)\ncolors=cyan,yellow")
+        -d error_log=/tmp/php.error.${dbname}.log
     }
 
     picker() {
