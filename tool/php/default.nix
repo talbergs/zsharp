@@ -4,6 +4,9 @@ let
   common = {
     extensions = ({ enabled, all }: enabled ++ (with all; [ xdebug spx ]));
     extraConfig = ''
+      max_execution_time = 300
+      post_max_size = 16M
+
       ;;
       ;; add &XDEBUG_SESSION_START=1 query parameter
       ;;
