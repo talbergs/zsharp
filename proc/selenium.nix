@@ -34,6 +34,12 @@ pkgs.mkShell {
     }
 
     sandbox() {
+      FILTER=
+      if [ ! -z "$1" ]
+      then
+        FILTER="--filter $1"
+      fi
+
       if [ -d /tmp/xselenium-ui ]
       then
         rm -rf /tmp/xselenium-ui
@@ -58,9 +64,9 @@ pkgs.mkShell {
         PHPUNIT_BASEDIR=/tmp/xselenium-ui \
         PHPUNIT_DATA_SOURCES_DIR=/tmp/xselenium-ui/tests/selenium/data/sources/ \
         PHPUNIT_DATA_DIR=$(fresh_dir /tmp/PHPUNIT_DATA_DIR) \
-        PHPUNIT_COMPONENT_DIR=$(fresh_dir /tmp/PHPUNIT_COMPONENT_DIR) \
-        PHPUNIT_REFERENCE_DIR=/tmp/xselenium-ui \
-        PHPUNIT_SCREENSHOT_DIR=/tmp/xselenium-ui \
+        PHPUNIT_COMPONENT_DIR=$(fresh_dir /tmp/PHPUNIT_COMPONENT_DIR)/ \
+        PHPUNIT_REFERENCE_DIR=/tmp/screenshots-reference \
+        PHPUNIT_SCREENSHOT_DIR=/tmp/screenshots \
         PHPUNIT_SCREENSHOT_URL=watewa \
       > ./tests/bootstrap.php
 
@@ -88,7 +94,11 @@ pkgs.mkShell {
       cd ./tests
       export XDEBUG_CONFIG="idekey=netbeans-xdebug"
 
-      ${getExe pkgs.php} /tmp/phpunit-8.5.41.phar --filter testFormUserRoles_Layout --bootstrap=bootstrap.php --dont-report-useless-tests selenium/SeleniumTests.php
+      ${getExe pkgs.php} /tmp/phpunit-8.5.41.phar $FILTER \
+        --bootstrap=bootstrap.php \
+        --testdox \
+        --configuration=./phpunit.xml \
+        selenium/SeleniumTests.php
     }
 
     picker() {
@@ -125,7 +135,7 @@ pkgs.mkShell {
 
           selenium-server 2>/dev/null &
 
-          sandbox
+          sandbox "$FILTER"
         ;;
         *)
           echo "Choose an option."
