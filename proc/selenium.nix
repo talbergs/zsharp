@@ -51,7 +51,9 @@ pkgs.mkShell {
       PHP_VER=v83
       PACKAGE="${tool}#php$PHP_VER"
       LOCALE_ARCHIVE=${pkgs.glibcLocalesUtf8.override {allLocales = true;}}/lib/locale/locale-archive \
-      nix run $PACKAGE -- -S 127.0.0.1:${uiport} 2>/dev/null &
+      nix run $PACKAGE -- \
+        -d date.timezone=Europe/Riga \
+        -S 127.0.0.1:${uiport} 2>/dev/null &
 
       nix run ${tool}#selenium_zabbix_conf_php -- \
         PORT=${dbport} \
