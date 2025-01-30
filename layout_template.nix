@@ -207,37 +207,45 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="phpunit on php 7.4 (for zabbix 6.0+)" {
                     args \
                         "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
                         "--argstr" "uiroot" "{{ $UI_ROOT }}" \
+                        "--argstr" "phpver" "74" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
-                        "${./proc/phpunit_run_74.nix}"
+                        "${./proc/phpunit_run.nix}"
                 }
 
                 pane command="nix-shell" name="phpunit on php 8.0 (for zabbix 7.0+)" {
                     args \
                         "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
                         "--argstr" "uiroot" "{{ $UI_ROOT }}" \
+                        "--argstr" "phpver" "80" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
-                        "${./proc/phpunit_run_80.nix}"
+                        "${./proc/phpunit_run.nix}"
                 }
 
                 pane command="nix-shell" name="phpunit on php 8.3 (for zabbix ~)" {
                     args \
                         "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
                         "--argstr" "uiroot" "{{ $UI_ROOT }}" \
+                        "--argstr" "phpver" "83" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
-                        "${./proc/phpunit_run_83.nix}"
+                        "${./proc/phpunit_run.nix}"
                 }
 
                 pane command="nix-shell" name="phpunit on php 8.4 (for zabbix ^)" {
                     args \
                         "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
                         "--argstr" "uiroot" "{{ $UI_ROOT }}" \
+                        "--argstr" "phpver" "84" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
-                        "${./proc/phpunit_run_84.nix}"
+                        "${./proc/phpunit_run.nix}"
                 }
 
             }
