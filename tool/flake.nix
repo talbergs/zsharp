@@ -30,6 +30,7 @@
           };
         }
 
+        // (import ./configs/default.nix { inherit pkgs; })
         // (import ./php/default.nix { inherit pkgs; phps = phps.packages.${system}; })
         // (import ./locale/default.nix { inherit pkgs; });
     };
