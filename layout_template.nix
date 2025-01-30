@@ -157,7 +157,7 @@ pkgs.writeTextFile {
                         "--argstr" "tool" "${tool}" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
-                    "${./proc/php_picker.nix}"
+                    "${./proc/php_serve.nix}"
                 }
 
                 pane command="nix-shell" name="PHP:logs-colorized" {

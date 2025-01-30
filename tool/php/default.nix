@@ -45,15 +45,20 @@ let
       ${getExe (buildEnv common)} "$@"
     '';
   };
+  build_php_server = php: pkgs.writeShellScriptBin "php_serve" ''
+    echo "Logs: $2; Port: $1"
+    ${getExe php} \
+        -d memory_limit=4G \
+        -d error_reporting=E_ALL \
+        -d log_errors=On \
+        -d error_log=$2 \
+        -S 127.0.0.1:$1
+  '';
 in rec {
-  phpunit_runners = {
-    unit = pkgs.writeShellApplication {
-      text = ''echo unit'';
-    };
-    selenium = pkgs.writeShellApplication {
-      text = ''echo selenium'';
-    };
-  };
+  phpv74_serve = build_php_server phpv74;
+  phpv80_serve = build_php_server phpv80;
+  phpv83_serve = build_php_server phpv83;
+  phpv84_serve = build_php_server phpv84;
 
   phpunit74 = build_phpunit phpv74;
   phpunit80 = build_phpunit phpv80;
