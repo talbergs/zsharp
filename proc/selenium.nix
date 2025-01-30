@@ -69,7 +69,7 @@ pkgs.mkShell {
         PHPUNIT_COMPONENT_DIR=$(fresh_dir /tmp/PHPUNIT_COMPONENT_DIR)/ \
         PHPUNIT_REFERENCE_DIR=/tmp/screenshots-reference \
         PHPUNIT_SCREENSHOT_DIR=/tmp/screenshots \
-        PHPUNIT_SCREENSHOT_URL=watewa \
+        PHPUNIT_SCREENSHOT_URL=/tmp/screenshots-reference/ \
       > ./tests/bootstrap.php
 
       if [ -d ./tests/selenium/modules ]; then
@@ -112,12 +112,13 @@ pkgs.mkShell {
       PHP_VER=''${phpver:-v83}
       FILTER=''${FILTER:-}
 
-      printf "$(tput setaf 2)%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
+      printf "$(tput setaf 2)%s\n%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
         "1) Set php version? (current: $PHP_VER)" \
         "2) Set filter? (current: $FILTER)" \
         "3) Clear filter?" \
         "4) Run?"
-      read -N 1 -e -p "[1][2][3][4]>:" var
+        "5) Run manual?"
+      read -N 1 -e -p "[1][2][3][4][5]>:" var
 
       case "$var" in
         1)
@@ -138,6 +139,11 @@ pkgs.mkShell {
           selenium-server 2>/dev/null &
 
           sandbox "$FILTER"
+        ;;
+        4)
+          freshdb
+
+          selenium-server 2>/dev/null &
         ;;
         *)
           echo "Choose an option."
