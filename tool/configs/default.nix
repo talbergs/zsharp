@@ -21,6 +21,7 @@ let mk_tmpl = layout_template: pkgs.writeShellApplication {
   };
 in
 {
+  server_conf = mk_tmpl ./server.conf;
   zabbix_conf_php = mk_tmpl ./zabbix.conf.php;
   selenium_bootstrap_php = mk_tmpl ./phpunit.bootstrap.selenium.php;
   selenium_zabbix_conf_php = mk_tmpl ./selenium.zabbix.conf.php;

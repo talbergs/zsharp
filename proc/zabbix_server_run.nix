@@ -1,4 +1,4 @@
-{ prefix, dbname, dbuser, upstream ? <nixpkgs> }:
+{ tool, prefix, dbname, dbuser, upstream ? <nixpkgs> }:
 let
   pkgs = import upstream { };
 in
@@ -14,10 +14,15 @@ pkgs.mkShell {
     pcre2
   ];
   shellHook = ''
+    mk_conf() {
+      nix run ${tool}#server_conf -- \
+        LogFile="${prefix}/zabbix_server.log" \
+        DBName="${dbname}" \
+        DBUser="${dbuser}"
+    }
     build() {
-      echo "DBName=${dbname}" >> ${prefix}/etc/zabbix_server.conf
-      echo "DBUser=${dbuser}" >> ${prefix}/etc/zabbix_server.conf
-      echo "LogFile=${prefix}/zabbix_server.log" >> ${prefix}/etc/zabbix_server.conf
+      [[ ! -e "${prefix}/zabbix_server.log" ]] && mk_conf > "${prefix}/zabbix_server.log"
+
       ${prefix}/sbin/zabbix_server -f
     }
 
