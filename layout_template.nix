@@ -68,6 +68,7 @@ pkgs.writeTextFile {
                         "--argstr" "dbname" "{{ $DB_NAME }}" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
+                        "--argstr" "tool" "${tool}" \
                         "${./proc/zabbix_server_run.nix}"
                 }
                 pane command="nix-shell" borderless=true name="Server logs" {
