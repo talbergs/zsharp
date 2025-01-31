@@ -48,6 +48,7 @@ let
   build_php_server = php: pkgs.writeShellScriptBin "php_serve" ''
     echo "Logs: $2; Port: $1"
     ${getExe php} \
+        -d date.timezone=Europe/Riga \
         -d memory_limit=4G \
         -d error_reporting=E_ALL \
         -d log_errors=On \
@@ -55,16 +56,19 @@ let
         -S 127.0.0.1:$1
   '';
 in rec {
+  phpv56_serve = build_php_server phpv56;
   phpv74_serve = build_php_server phpv74;
   phpv80_serve = build_php_server phpv80;
   phpv83_serve = build_php_server phpv83;
   phpv84_serve = build_php_server phpv84;
 
+  phpunit56 = build_phpunit phpv56;
   phpunit74 = build_phpunit phpv74;
   phpunit80 = build_phpunit phpv80;
   phpunit83 = build_phpunit phpv83;
   phpunit84 = build_phpunit phpv84;
 
+  phpv56 = build_php phps.php56.buildEnv;
   phpv74 = build_php phps.php74.buildEnv;
   phpv80 = build_php phps.php80.buildEnv;
   phpv83 = build_php phps.php83.buildEnv;

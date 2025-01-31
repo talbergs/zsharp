@@ -24,7 +24,7 @@ pkgs.mkShell {
     }
 
     picker() {
-      ${pkgs.findutils}/bin/xargs -n 1 <<< "v74 v80 v83 v84" | ${getExe pkgs.fzf} --height=15
+      ${pkgs.findutils}/bin/xargs -n 1 <<< "v56 v74 v80 v83 v84" | ${getExe pkgs.fzf} --height=15
     }
 
     fg() {
