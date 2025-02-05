@@ -15,14 +15,17 @@
       ...
     }:
     let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; overlays = [ tg.outputs.overlay.${system} ]; };
+      map_supported_systems = function: nixpkgs.lib.genAttrs [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ] (system: function ({ inherit system; } // (import nixpkgs { inherit system; overlays = [ tg.outputs.overlay.${system} ]; })));
     in
     {
 
-      packages.x86_64-linux =
+      packages = map_supported_systems (pkgs:
         {
-          default = pkgs.hello;
           sass = pkgs.bundlerApp {
             pname = "sass";
             exes = [ "sass" ];
@@ -30,9 +33,11 @@
           };
         }
 
+        // (import ./builders/default.nix { inherit pkgs; })
         // (import ./configs/default.nix { inherit pkgs; })
-        // (import ./php/default.nix { inherit pkgs; phps = phps.packages.${system}; })
-        // (import ./locale/default.nix { inherit pkgs; });
+        // (import ./php/default.nix { inherit pkgs phps; })
+        // (import ./locale/default.nix { inherit pkgs; })
+      );
     };
 
 }

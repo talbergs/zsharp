@@ -16,18 +16,19 @@
         "aarch64-linux"
         "x86_64-darwin"
         "aarch64-darwin"
-      ] (system: function nixpkgs.legacyPackages.${system});
+      ] (system: function (import nixpkgs { inherit system; }));
 
       tool = ./tool;
-      pkgs = import nixpkgs { system = "x86_64-linux"; };
-      layout_template = import ./layout_template.nix { inherit pkgs tool nixpkgs; };
-      layout_generator = import ./layout_generator.nix { inherit pkgs layout_template; };
     in
     {
-      packages = map_supported_systems (pkgs: {
+      packages = map_supported_systems (pkgs:
+      let
+        layout_template = import ./layout_template.nix { inherit pkgs tool nixpkgs; };
+        layout_generator = import ./layout_generator.nix { inherit pkgs layout_template; };
+      in {
+        inherit layout_generator layout_template;
+      } // {
         default = import ./default.nix { inherit pkgs layout_generator; };
-        layout_generator = layout_generator;
-        layout_template = layout_template;
       });
     };
 }

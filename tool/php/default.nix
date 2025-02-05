@@ -1,6 +1,7 @@
 { pkgs, phps, ... }:
 with pkgs.lib;
 let
+  _phps = phps.packages.${pkgs.system};
   phpunit_phar = ./phpunit-8.5.41.phar;
   dev = ./dev-runtime;
   common = {
@@ -68,11 +69,11 @@ in rec {
   phpunit83 = build_phpunit phpv83;
   phpunit84 = build_phpunit phpv84;
 
-  phpv56 = build_php phps.php56.buildEnv;
-  phpv74 = build_php phps.php74.buildEnv;
-  phpv80 = build_php phps.php80.buildEnv;
-  phpv83 = build_php phps.php83.buildEnv;
-  phpv84 = build_php phps.php84.buildEnv;
+  phpv56 = build_php _phps.php56.buildEnv;
+  phpv74 = build_php _phps.php74.buildEnv;
+  phpv80 = build_php _phps.php80.buildEnv;
+  phpv83 = build_php _phps.php83.buildEnv;
+  phpv84 = build_php _phps.php84.buildEnv;
 
   phpsvd = pkgs.writeShellApplication {
     name = "var-dump-server";
