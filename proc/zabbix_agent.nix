@@ -1,6 +1,9 @@
-{ prefix, upstream ? <nixpkgs> }:
-let pkgs = import upstream { };
-in pkgs.mkShell {
+{ tool, upstream ? <nixpkgs> }:
+let
+  pkgs = import upstream { };
+in
+with pkgs.lib;
+pkgs.mkShell {
   packages = with pkgs; [
     gcc
     automake
@@ -14,26 +17,29 @@ in pkgs.mkShell {
     pcre2
   ];
   shellHook = ''
+    source ${tool}/rtp.sh
+
     build() {
-      mkdir -p ${prefix}
       ./bootstrap.sh
       ./configure \
-        --prefix=${prefix} \
+        --prefix="$(rtp:agent)" \
         --with-libpcre2=$(dirname $(which pcre2-config))/.. \
         --enable-agent
 
       make clean -j6
       make install -j6
-
-      ${pkgs.lib.getExe pkgs.tree} ${prefix}
     }
 
     fg() {
-      ${pkgs.lib.getExe pkgs.tree} ${prefix}
+      echo "List: $(rtp:agent)"
+      ${getExe pkgs.tree} "$(rtp:agent)"
+
       if read -r -p "Build agent?"
       then
         build
       fi
+
+      fg
     }
   '';
 }

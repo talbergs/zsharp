@@ -41,7 +41,7 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Agent2" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/agent2" \
+                        "--argstr" "tool" "${tool}" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_agent2.nix}"
@@ -50,8 +50,8 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Agent" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/agent" \
                         "--argstr" "upstream" "${nixpkgs}" \
+                        "--argstr" "tool" "${tool}" \
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_agent.nix}"
                 }
@@ -135,8 +135,8 @@ pkgs.writeTextFile {
             pane cwd="{{ $SOURCES }}" command="nix-shell" name="Scheme" {
                 args \
                     "--run" "fg" \
-                    "--argstr" "prefix" "{{ $SOURCES }}/zsharp/dbschemes" \
                     "--argstr" "upstream" "${nixpkgs}" \
+                    "--argstr" "tool" "${tool}" \
                     "--include" "nixpkgs=${nixpkgs}" \
                     "${./proc/zabbix_scheme.nix}"
             }
@@ -195,7 +195,6 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="diff-locale-strings" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/locale_strings" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--argstr" "tool" "${tool}" \
                         "--include" "nixpkgs=${nixpkgs}" \

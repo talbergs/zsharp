@@ -1,11 +1,13 @@
 # on run 3)
 #  git archive tmp dirs
-{ tool, prefix, upstream ? <nixpkgs> }:
+{ tool, upstream ? <nixpkgs> }:
 let
   pkgs = import upstream { };
 in with pkgs.lib;
 pkgs.mkShell {
   shellHook = ''
+    source ${tool}/rtp.sh
+
     extract() {
       rev=$(${getExe pkgs.git} rev-parse "''${1:-000000}")
 
@@ -14,10 +16,7 @@ pkgs.mkShell {
         exit 2
       fi
 
-      tmp=${prefix}/$rev
-      [ -d "$tmp" ] && rm -rf "$tmp"
-      mkdir -p "$tmp"
-
+      tmp="$(rtp:src:sha $rev)"
       ${getExe pkgs.git} archive "$rev" > "$tmp.tar"
       ${getExe pkgs.gnutar} -xf "$tmp.tar" -C "$tmp"
 
@@ -40,7 +39,6 @@ pkgs.mkShell {
     fg() {
       then=''${then:-HEAD^}
       now=''${now:-HEAD}
-      mkdir -p ${prefix}
       clear
 
       printf "$(tput setaf 2)%s\n%s\n%s$(tput sgr0)\n\n" \
@@ -70,8 +68,8 @@ pkgs.mkShell {
           printf ".. extracted as %s and %s\n" "$rev_then" "$rev_now"
 
           (
-            nix run ${tool}#get_translation_strings -- "$dir_then" > ${prefix}/$rev_then.php
-            nix run ${tool}#get_translation_strings -- "$dir_now" > ${prefix}/$rev_now.php
+            nix run ${tool}#get_translation_strings -- "$dir_then" > "$(rtp:src:sha)/$rev_then.php"
+            nix run ${tool}#get_translation_strings -- "$dir_now" > "$(rtp:src:sha)/$rev_now.php"
           ) 2> /dev/null
 
           echo '<?php' > /tmp/diff.php
@@ -85,10 +83,12 @@ pkgs.mkShell {
           echo 'echo $res;' >> /tmp/diff.php
 
           tput bold
-          THEN=${prefix}/$rev_then.php NOW=${prefix}/$rev_now.php ${pkgs.php}/bin/php -f /tmp/diff.php
+          THEN="$(rtp:src:sha $rev_then).php" \
+          NOW="$(rtp:src:sha $rev_now).php" \
+          ${pkgs.php}/bin/php -f /tmp/diff.php
           tput sgr0
 
-          printf "\n\nrefs: ${prefix}/$rev_then ${prefix}/$rev_now"
+          printf "\n\nrefs: $(rtp:src:sha $rev_then) $(rtp:src:sha $rev_now)"
         ;;
         *)
           echo "Choose an option."
