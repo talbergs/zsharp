@@ -11,7 +11,12 @@ Conventions:
 
 Usage:
 - system has a single dependency - [nix](https://nixos.org/download/)
-- ensure minimum required nix configuration - `echo experimental-features = nix-command flakes >> ~/.config/nix/nix.conf`
+- ensure minimum required nix configuration:
+
+```
+echo experimental-features = nix-command flakes >> ~/.config/nix/nix.conf
+```
+
 - `nix run github:talbergs/zsharp -- <opts>` - cutting edge release
 - `nix run github:talbergs/zsharp/<tag> -- <opts>` - suggested to pin to a stable tag
 - `nix run ~/local-copy-of-zsharp -- <opts>` - maintain own fork
