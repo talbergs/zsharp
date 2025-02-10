@@ -1,0 +1,7 @@
+[Builders:C] Tab
+	Builders work in parallel, sandboxed
+	Artifacts in ~/.cache
+	Agents 1 and 2 "unified"
+
+[Runners:C] Tab
+	Added "reset config" option.

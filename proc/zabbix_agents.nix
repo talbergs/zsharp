@@ -8,19 +8,19 @@ pkgs.mkShell {
 
     fg() {
       clear
-      ${getExe pkgs.tree} "$(rtp:dst:server ${session})"
-      echo DST="$(rtp:dst:server ${session})"
+      ${getExe pkgs.tree} "$(rtp:dst:agents ${session})"
+      echo DST="$(rtp:dst:agents ${session})"
       echo SRC="$PWD"
 
       printf "$(tput setaf 2)%s\n%s$(tput sgr0)\n\n" \
-        "1) Build server?"
+        "1) Build agents 1 and 2?"
       read -N 1 -e -p "[1]>:" var
 
       case "$var" in
         1)
-          DST="$(rtp:dst:server ${session})" \
+          DST="$(rtp:dst:agents ${session})" \
           SRC="$PWD" \
-            nix-shell ${tool}/builders/zabbix_server.nix --run build
+            nix-shell ${tool}/builders/zabbix_agents.nix --run build
 
           fg
         ;;
