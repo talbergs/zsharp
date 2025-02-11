@@ -1,7 +1,6 @@
-{ tool, prefix, dbname, dbuser, upstream ? <nixpkgs> }:
-let
-  pkgs = import upstream { };
-in
+{ tool, session, dbname, dbuser, upstream ? <nixpkgs> }:
+let pkgs = import upstream { };
+in with pkgs.lib;
 pkgs.mkShell {
   packages = with pkgs; [
     gcc
@@ -14,25 +13,55 @@ pkgs.mkShell {
     pcre2
   ];
   shellHook = ''
+    source ${tool}/rtp.sh
+    DST="$(rtp:dst:server ${session})"
+
     mk_conf() {
-      nix run ${tool}#server_conf -- \
-        LogFile="${prefix}/zabbix_server.log" \
-        DBName="${dbname}" \
-        DBUser="${dbuser}"
+        LOGFILE="$DST/log" \
+        DB_USER="${dbuser}" \
+        DB_NAME="${dbname}" \
+      nix run ${tool}#server_conf
     }
+
     build() {
-      [[ ! -e "${prefix}/zabbix_server.log" ]] && mk_conf > "${prefix}/zabbix_server.log"
+      [[ ! -e "$DST/conf" ]] && mk_conf > "$DST/conf"
 
-      ${prefix}/sbin/zabbix_server -f
+      echo "$DST/conf"
+      cat "$DST/conf"
+
+      "$DST"/sbin/zabbix_server -f -c "$DST/conf"
     }
-
 
     fg() {
-      cat ${prefix}/ZABBIX_REVISION
-      if read -r -p "Configure and run server?"
-      then
-        build
-      fi
+      clear
+
+      echo DST=$DST
+      ${getExe pkgs.tree} "$DST"
+
+      [[ -e "$DST/conf" ]] \
+        && echo Found config: $DST/conf \
+        && tput sgr 2 \
+        && cat "$DST/conf" \
+        && tput sgr 0
+
+        printf "$(tput setaf 2)%s\n%s\n%s$(tput sgr0)\n\n" \
+          "1) Start server?" "2) Reset config?"
+        read -N 1 -e -p "[1][2]>:" var
+
+        case "$var" in
+          1)
+            build
+            fg
+          ;;
+          2)
+            mk_conf > "$DST/conf"
+            fg
+          ;;
+          *)
+            echo "Choose an option."
+            fg
+          ;;
+        esac
     }
   '';
 }

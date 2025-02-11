@@ -1,4 +1,4 @@
-{ session, tool, upstream ? <nixpkgs> }:
+{ session, tool, upstream }:
 let pkgs = import upstream { };
 in with pkgs.lib;
 pkgs.mkShell {

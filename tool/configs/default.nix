@@ -25,6 +25,8 @@ in
   agent_conf = mk_tmpl ./agent.conf;
   zabbix_conf_php = mk_tmpl ./zabbix.conf.php;
   selenium_bootstrap_php = mk_tmpl ./phpunit.bootstrap.selenium.php;
+  api_bootstrap_php = mk_tmpl ./phpunit.bootstrap.api.php;
+  api_zabbix_conf_php = mk_tmpl ./api.zabbix.conf.php;
   selenium_zabbix_conf_php = mk_tmpl ./selenium.zabbix.conf.php;
 }
 

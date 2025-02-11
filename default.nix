@@ -91,6 +91,7 @@ pkgs.writeShellApplication {
     ${getExe pkgs.zellij} \
         --session "$SESSION" \
         --new-session-with-layout <(${getExe layout_generator} \
+                SESSION="$SESSION" \
                 SOURCES="$SOURCES" \
                 DB_PORT="$DB_PORT" \
                 UI_ROOT="$UI_ROOT" \

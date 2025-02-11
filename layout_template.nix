@@ -21,7 +21,8 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Server" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/server" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_server.nix}"
@@ -30,7 +31,8 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Proxy" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/proxy" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_proxy.nix}"
@@ -41,19 +43,10 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Agent2" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "tool" "${tool}" \
-                        "--argstr" "upstream" "${nixpkgs}" \
-                        "--include" "nixpkgs=${nixpkgs}" \
-                        "${./proc/zabbix_agent2.nix}"
-                }
-
-                pane command="nix-shell" name="Agent" {
-                    args \
-                        "--run" "fg" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--argstr" "tool" "${tool}" \
-                        "--include" "nixpkgs=${nixpkgs}" \
-                        "${./proc/zabbix_agent.nix}"
+                        "--argstr" "session" "{{ $SESSION }}" \
+                        "${./proc/zabbix_agents.nix}"
                 }
             }
         }
@@ -63,7 +56,7 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Server process" size="30%" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/server" \
+                        "--argstr" "session" "{{ $SESSION }}" \
                         "--argstr" "dbuser" "{{ $DB_USER }}" \
                         "--argstr" "dbname" "{{ $DB_NAME }}" \
                         "--argstr" "upstream" "${nixpkgs}" \
@@ -71,12 +64,11 @@ pkgs.writeTextFile {
                         "--argstr" "tool" "${tool}" \
                         "${./proc/zabbix_server_run.nix}"
                 }
-                pane command="nix-shell" borderless=true name="Server logs" {
+                pane command="nix-shell" name="Server logs" {
                     args \
-                        "--run" "colorizer:c" \
-                        "--argstr" "logfile" "{{ $SOURCES }}/zsharp/server/zabbix_server.log" \
+                        "--run" "logfile=$(rtp:dst:server {{ $SESSION }})/log;colorizer:c" \
                         "--argstr" "upstream" "${nixpkgs}" \
-                        "--include" "nixpkgs=${nixpkgs}" \
+                        "--argstr" "tool" "${tool}" \
                     "${./proc/grc.nix}"
                 }
             }
@@ -84,17 +76,16 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Agent2 process" size="30%" {
                     args \
                         "--run" "fg" \
-                        "--argstr" "prefix" "{{ $SOURCES }}/zsharp/agent2" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
                         "--argstr" "upstream" "${nixpkgs}" \
-                        "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_agent2_run.nix}"
                 }
-                pane command="nix-shell" borderless=true name="Agent2 logs" {
+                pane command="nix-shell" name="Agent2 logs" {
                     args \
-                        "--run" "colorizer:c" \
-                        "--argstr" "logfile" "{{ $SOURCES }}/zsharp/agent2/zabbix_agent2.log" \
+                        "--run" "logfile=$(rtp:dst:agents {{ $SESSION }})/log;colorizer:c" \
                         "--argstr" "upstream" "${nixpkgs}" \
-                        "--include" "nixpkgs=${nixpkgs}" \
+                        "--argstr" "tool" "${tool}" \
                     "${./proc/grc.nix}"
                 }
             }
@@ -116,9 +107,9 @@ pkgs.writeTextFile {
                     "--run" "fg" \
                     "--argstr" "dbport" "{{ $DB_PORT }}" \
                     "--argstr" "dbname" "{{ $DB_NAME }}" \
-                    "--argstr" "scheme" "{{ $SOURCES }}/zsharp/dbschemes/postgresql.sql" \
+                    "--argstr" "session" "{{ $SESSION }}" \
+                    "--argstr" "tool" "${tool}" \
                     "--argstr" "upstream" "${nixpkgs}" \
-                    "--include" "nixpkgs=${nixpkgs}" \
                     "${./proc/postgres-apply.nix}"
             }
 
@@ -137,7 +128,7 @@ pkgs.writeTextFile {
                     "--run" "fg" \
                     "--argstr" "upstream" "${nixpkgs}" \
                     "--argstr" "tool" "${tool}" \
-                    "--include" "nixpkgs=${nixpkgs}" \
+                    "--argstr" "session" "{{ $SESSION }}" \
                     "${./proc/zabbix_scheme.nix}"
             }
         }
@@ -163,10 +154,9 @@ pkgs.writeTextFile {
 
                 pane command="nix-shell" name="PHP:logs-colorized" {
                     args \
-                        "--run" "colorizer:php" \
-                        "--argstr" "logfile" "/tmp/php.error.{{ $DB_NAME }}.log" \
+                        "--run" "logfile=/tmp/php.error.{{ $SESSION }}.log;colorizer:php" \
                         "--argstr" "upstream" "${nixpkgs}" \
-                        "--include" "nixpkgs=${nixpkgs}" \
+                        "--argstr" "tool" "${tool}" \
                     "${./proc/grc.nix}"
                 }
             }
@@ -256,28 +246,24 @@ pkgs.writeTextFile {
                 args \
                     "--run" "fg" \
                     "--argstr" "tool" "${tool}" \
-                    "--argstr" "sources" "{{ $SOURCES }}" \
+                    "--argstr" "session" "{{ $SESSION }}" \
                     "--argstr" "uiroot" "{{ $UI_ROOT }}" \
-                    "--argstr" "scheme" "{{ $SOURCES }}/zsharp/dbschemes/postgresql.sql" \
                     "--argstr" "dbport" "{{ $DB_PORT }}" \
                     "--argstr" "dbname" "{{ $DB_NAME }}-test-api" \
                     "--argstr" "dbuser" "{{ $DB_USER }}" \
                     "--argstr" "upstream" "${nixpkgs}" \
-                    "--include" "nixpkgs=${nixpkgs}" \
                     "${./proc/api_tests.nix}"
             }
             pane command="nix-shell" name="Selenium tests" {
                 args \
                     "--run" "fg" \
                     "--argstr" "tool" "${tool}" \
-                    "--argstr" "sources" "{{ $SOURCES }}" \
+                    "--argstr" "session" "{{ $SESSION }}" \
                     "--argstr" "uiroot" "{{ $UI_ROOT }}" \
-                    "--argstr" "scheme" "{{ $SOURCES }}/zsharp/dbschemes/postgresql.sql" \
                     "--argstr" "dbport" "{{ $DB_PORT }}" \
                     "--argstr" "dbname" "{{ $DB_NAME }}-test-selenium" \
                     "--argstr" "dbuser" "{{ $DB_USER }}" \
                     "--argstr" "upstream" "${nixpkgs}" \
-                    "--include" "nixpkgs=${nixpkgs}" \
                     "${./proc/selenium.nix}"
             }
         }

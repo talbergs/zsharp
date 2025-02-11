@@ -1,7 +1,6 @@
-{ prefix, upstream ? <nixpkgs> }:
-let
-  pkgs = import upstream { };
-in
+{ tool, session, upstream }:
+let pkgs = import upstream { };
+in with pkgs.lib;
 pkgs.mkShell {
   packages = with pkgs; [
     gcc
@@ -14,16 +13,61 @@ pkgs.mkShell {
     pcre2
   ];
   shellHook = ''
+    source ${tool}/rtp.sh
+    DST="$(rtp:dst:agents ${session})"
+
+    mk_conf() {
+      echo "LogFile=$DST/log"
+      # echo "EnableRemoteCommands=1"
+      # echo "LogRemoteCommands=1"
+      echo "Server=127.0.0.1,0.0.0.0"
+    }
+
     build() {
-      echo "LogFile=${prefix}/zabbix_agent2.log" >> ${prefix}/etc/zabbix_agent2.conf
-      ${prefix}/sbin/zabbix_agent2 -f
+      [[ ! -e "$DST/conf" ]] && mk_conf > "$DST/conf"
+
+      echo "$DST/conf"
+      cat "$DST/conf"
+
+      old="$DST"/sbin/zabbix_agent2
+      [[ -e "$old" ]] && $old -f -c "$DST/conf" || "$DST"/sbin/zabbix_agentd -f -c "$DST/conf"
+
+      echo goodbye.
     }
 
     fg() {
-      if read -r -p "Configure and run agent?"
-      then
-        build
-      fi
+      clear
+
+      echo DST=$DST
+      ${getExe pkgs.tree} "$DST"
+
+
+      [[ -e ""$DST"/sbin/zabbix_agentd" ]] && "$DST"/sbin/zabbix_agentd --version || echo not found
+
+      [[ -e "$DST/conf" ]] \
+        && echo Found config: $DST/conf \
+        && tput sgr 2 \
+        && cat "$DST/conf" \
+        && tput sgr 0
+
+        printf "$(tput setaf 2)%s\n%s\n%s$(tput sgr0)\n\n" \
+          "1) Start agent2?" "2) Reset config?"
+        read -N 1 -e -p "[1][2]>:" var
+
+        case "$var" in
+          1)
+            set +e
+            build
+          ;;
+          2)
+            mk_conf > "$DST/conf"
+            fg
+          ;;
+          *)
+            echo "Choose an option."
+            fg
+          ;;
+        esac
     }
   '';
 }

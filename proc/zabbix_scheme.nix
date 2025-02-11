@@ -1,4 +1,4 @@
-{ tool, upstream ? <nixpkgs> }:
+{ tool, upstream, session }:
 let
   pkgs = import upstream { };
 in
@@ -9,8 +9,8 @@ pkgs.mkShell {
     source ${tool}/rtp.sh
 
     fg() {
-      echo "List: $(rtp:db_scheme)"
-      ${getExe pkgs.tree} "$(rtp:db_scheme)"
+      echo "List: $(rtp:db_scheme '${session}')"
+      ${getExe pkgs.tree} "$(rtp:db_scheme '${session}')"
 
       printf "$(tput setaf 2)%s\n%s$(tput sgr0)\n\n" \
         "1) Build db_scheme?"
@@ -18,7 +18,7 @@ pkgs.mkShell {
 
       case "$var" in
         1)
-          DST="$(rtp:db_scheme)" \
+          DST="$(rtp:db_scheme '${session}')" \
           SRC="$PWD" \
             nix run ${tool}#db_scheme
           fg

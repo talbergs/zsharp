@@ -1,15 +1,15 @@
 {
+  session,
   tool,
   uiroot,
-  scheme,
   dbport ? "5432",
   dbname,
   dbuser,
-  upstream ? <nixpkgs>
+  upstream,
 }:
 let
   pkgs = import upstream { };
-  uiport = "8556";
+  uiport = "3210";
 in
 with pkgs.lib;
 pkgs.mkShell {
@@ -20,10 +20,15 @@ pkgs.mkShell {
     chromium
   ];
   shellHook = ''
+    source ${tool}/rtp.sh
+    echo "List: $(rtp:db_scheme '${session}')"
+
+    scheme="$(rtp:db_scheme '${session}')/postgresql.sql"
+
     freshdb() {
       echo 'drop database "${dbname}";' | psql --host=0.0.0.0 --port=${dbport} --dbname=postgres
       echo 'create database "${dbname}" encoding Unicode template template0;' | psql --host=0.0.0.0 --port=${dbport} --dbname=postgres
-      echo '\i ${scheme};' | psql --host=0.0.0.0 --port=${dbport} --dbname=${dbname}
+      echo "\i $scheme;" | psql --host=0.0.0.0 --port=${dbport} --dbname=${dbname}
       echo '\i ${uiroot}/tests/selenium/data/data_test.sql;' | psql --host=0.0.0.0 --port=${dbport} --dbname=${dbname}
     }
 
