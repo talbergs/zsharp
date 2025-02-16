@@ -31,6 +31,7 @@
             exes = [ "sass" ];
             gemdir = ./sass;
           };
+          php-picker = import ./util/php-picker.nix { inherit pkgs; };
         }
 
         // (import ./builders/default.nix { inherit pkgs; })

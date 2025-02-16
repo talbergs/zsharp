@@ -50,24 +50,20 @@ pkgs.mkShell {
       > ./bootstrap.php
     }
 
-    picker() {
-      ${pkgs.findutils}/bin/xargs -n 1 <<< "74 80 83 84" | ${getExe pkgs.fzf} --height=15
-    }
-
+    PHP_VER=''${phpver:-83}
+    FILTER=''${FILTER:-}
     fg() {
       clear
-      PHP_VER=''${phpver:-83}
-      FILTER=''${FILTER:-}
 
       printf "$(tput setaf 2)%s\n%s\n%s$(tput sgr0)\n\n" \
         "1) Run?" \
         "2) Set php version? (current: $PHP_VER)" \
         "3) Set filter? (current: $FILTER)"
-      read -N 1 -e -p "[1][2][3][4]>:" var
+      read -N 1 -e -p "[1][2][3]>:" var
 
       case "$var" in
         2)
-          phpver=$(picker)
+          export PHP_VER=$(nix run ${tool}#php-picker)
           fg
         ;;
         3)
@@ -77,7 +73,7 @@ pkgs.mkShell {
         1)
           freshdb
           sandbox
-          PACKAGE="${tool}#php$PHP_VER"
+          PACKAGE="${tool}#phpv$PHP_VER"
 
           LOCALE_ARCHIVE=${pkgs.glibcLocalesUtf8.override {allLocales = true;}}/lib/locale/locale-archive \
           nix run $PACKAGE -- -S 127.0.0.1:${uiport} 2>/dev/null &

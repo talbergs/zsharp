@@ -136,7 +136,7 @@ pkgs.writeTextFile {
         tab name="Runners:WEB" split_direction="vertical" cwd="{{ $SOURCES }}/ui" {
             pane split_direction="horizontal" {
                 pane  size="30%" {
-                    name "PHP ({{ $PHP_VER }})"
+                    name "PHP ({{ $PHP_VER }}) at port {{ $UI_PORT }}"
                     command "nix-shell"
                     args \
                         "--run" "fg" \

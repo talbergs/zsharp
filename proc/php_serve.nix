@@ -23,10 +23,7 @@ pkgs.mkShell {
       cd "${uiroot}" && serve "$1" || exit 2
     }
 
-    picker() {
-      ${pkgs.findutils}/bin/xargs -n 1 <<< "v56 v74 v80 v83 v84" | ${getExe pkgs.fzf} --height=15
-    }
-
+    PHP_VER=''${PHP_VER:-83}
     fg() {
       clear
 
@@ -45,7 +42,7 @@ pkgs.mkShell {
           build ''${PHP_VER:-v83}
         ;;
         2)
-          export PHP_VER=$(picker)
+          export PHP_VER=$(nix run ${tool}#php-picker)
           fg
         ;;
       esac

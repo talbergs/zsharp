@@ -39,8 +39,42 @@ rtp:_make() {
 
 # <src> <uniquesha>
 sandbox:cd() {
-  dir="$(rtp:_make sandbox/"$2")"
+  dir="$(rtp:_make "sandbox/$2")"
   rm -rf "$dir"
   cp -R "$1" "$dir"
   cd "$dir" || exit 8
+}
+
+tmp:new() {
+  dir="$(rtp:_make "tmp/$1")"
+  rm -rf "$dir"
+  echo -n "$(rtp:_make "tmp/$1")"
+}
+
+# <env> <name>
+state:name() {
+  state="$(rtp:_make "state/$1")/$2"
+  [ ! -f "$state" ] && touch "$state"
+  echo -n "$state"
+}
+
+# <env> <name>
+state:get() {
+  addr="$(state:name "$1" "$2")"
+  cat "$addr"
+}
+
+# <env> <name> <value>
+state:set() {
+  echo -n "$3" > "$(state:name "$1" "$2")"
+}
+
+# <env> <value>
+state:set:selenium-filter() {
+  state:set "$1" "selenium-filter" "$2"
+}
+
+# <env>
+state:get:selenium-filter() {
+  state:get "$1" "selenium-filter"
 }

@@ -4,4 +4,4 @@
 	Agents 1 and 2 "unified"
 
 [Runners:C] Tab
-	Added "reset config" option.
+	Added "edit config" and "reset config" to process menus.
