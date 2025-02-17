@@ -15,14 +15,6 @@ pkgs.mkShell {
         USER="${dbuser}"
     }
 
-    serve() {
-      nix run ${tool}#php$1_serve --  ${uiport} /tmp/php.error.${dbname}.log
-    }
-
-    build() {
-      cd "${uiroot}" && serve "$1" || exit 2
-    }
-
     PHP_VER=''${PHP_VER:-83}
     fg() {
       clear
@@ -34,12 +26,13 @@ pkgs.mkShell {
 
       printf "$(tput setaf 2)%s\n%s\n$(tput sgr0)\n\n" \
         "1) Run?" \
-        "2) Set php version? (current: ''${PHP_VER:-v83})"
+        "2) Set php version? (current: $PHP_VER)"
       read -N 1 -e -p "[1][2]>:" var
 
       case "$var" in
         1)
-          build ''${PHP_VER:-v83}
+          cd "${uiroot}"
+          nix run ${tool}#phpv''${PHP_VER}_serve -- ${uiport} /tmp/php.error.${dbname}.log
         ;;
         2)
           export PHP_VER=$(nix run ${tool}#php-picker)
