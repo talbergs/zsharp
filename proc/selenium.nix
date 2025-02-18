@@ -33,7 +33,7 @@ pkgs.mkShell {
     }
 
     start_services() {
-        selenium-server 2>/dev/null &
+        selenium-server -log /tmp/selenium-server.log 2>/dev/null &
         echo "Started selenium server"
 
         PACKAGE="${tool}#phpv$PHP_VER"

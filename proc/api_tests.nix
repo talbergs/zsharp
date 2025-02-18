@@ -30,28 +30,36 @@ pkgs.mkShell {
       echo '\i ${uiroot}/tests/api_json/data/data_test.sql;' | psql --host=0.0.0.0 --port=${dbport} --dbname=${dbname}
     }
 
-    sandbox() {
-      rm -rf /tmp/phpunit-component-dir
-      mkdir /tmp/phpunit-component-dir
-      rm -rf /tmp/api-tests
-      cp -R ${uiroot} /tmp/api-tests
-      cd /tmp/api-tests
-
-      nix run ${tool}#api_zabbix_conf_php -- \
-        USER=http://127.0.0.1:${uiport}/ \
-        DATABASE=${dbname} \
-        PORT=${dbport} \
-      > ./conf/zabbix.conf.php
+    set_config() {
+      sandbox:cd "${uiroot}" "api-tests/${session}"
+      echo "Copied ${uiroot} to $PWD"
 
       nix run ${tool}#api_bootstrap_php -- \
         PHPUNIT_URL=http://127.0.0.1:${uiport}/ \
         PHPUNIT_ERROR_LOG=/tmp/api_test_error.log \
-        PHPUNIT_COMPONENT_DIR=$(fresh_dir /tmp/PHPUNIT_COMPONENT_DIR)/ \
-      > ./bootstrap.php
+        PHPUNIT_COMPONENT_DIR=$(tmp:new PHPUNIT_COMPONENT_DIR)/ \
+      > ./tests/bootstrap.php
+      echo "Prepared $PWD/tests/bootstrap.php"
+
+      nix run ${tool}#api_zabbix_conf_php -- \
+        PORT=${dbport} \
+        DATABASE=${dbname} \
+        USER=${dbuser} \
+      > ./conf/zabbix.conf.php
+      echo "Prepared $PWD/conf/zabbix.conf.php"
     }
 
-    PHP_VER=''${phpver:-83}
-    FILTER=''${FILTER:-}
+    start_services() {
+      PACKAGE="${tool}#phpv$PHP_VER"
+      LOCALE_ARCHIVE=${pkgs.glibcLocalesUtf8.override {allLocales = true;}}/lib/locale/locale-archive \
+      nix run $PACKAGE -- \
+        -d date.timezone=Europe/Riga \
+        -S 127.0.0.1:${uiport} 2>/dev/null &
+      echo "Started php -S -S 127.0.0.1:${uiport}"
+    }
+
+    PHP_VER=''${PHP_VER:-83}
+    FILTER=''${FILTER:-$(state:get:api-tests-filter ${session})}
     fg() {
       clear
 
@@ -62,32 +70,26 @@ pkgs.mkShell {
       read -N 1 -e -p "[1][2][3]>:" var
 
       case "$var" in
+        1)
+          set -euxo pipefail
+
+          freshdb
+          set_config
+          start_services
+
+          nix run ${tool}#phpunit$PHP_VER -- $FILTER \
+            --bootstrap=./tests/bootstrap.php \
+            ./tests/api_json/ApiJsonTests.php
+        ;;
         2)
           export PHP_VER=$(nix run ${tool}#php-picker)
           fg
         ;;
         3)
           read -e -p "filter>:" FILTER
+          [ -z "$FILTER" ] && export FILTER= || export FILTER="--filter $FILTER"
+          state:set:api-tests-filter ${session} "$FILTER"
           fg
-        ;;
-        1)
-          freshdb
-          sandbox
-          PACKAGE="${tool}#phpv$PHP_VER"
-
-          LOCALE_ARCHIVE=${pkgs.glibcLocalesUtf8.override {allLocales = true;}}/lib/locale/locale-archive \
-          nix run $PACKAGE -- -S 127.0.0.1:${uiport} 2>/dev/null &
-
-          filter_arg=
-          if [ ! -z "$FILTER" ]
-          then
-            filter_arg="--filter $FILTER"
-          fi
-
-          nix run ${tool}#phpunit$PHP_VER -- $filter_arg \
-            --bootstrap=/tmp/api-tests/bootstrap.php \
-            --configuration=${uiroot}/tests/phpunit.xml \
-          ./tests/api_json/ApiJsonTests.php
         ;;
         *)
           echo "Choose an option."

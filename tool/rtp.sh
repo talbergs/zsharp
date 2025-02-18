@@ -78,3 +78,13 @@ state:set:selenium-filter() {
 state:get:selenium-filter() {
   state:get "$1" "selenium-filter"
 }
+
+# <env> <value>
+state:set:api-tests-filter() {
+  state:set "$1" "api-tests-filter" "$2"
+}
+
+# <env>
+state:get:api-tests-filter() {
+  state:get "$1" "api-tests-filter"
+}
