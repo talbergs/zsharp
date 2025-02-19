@@ -30,12 +30,6 @@ pkgs.mkShell {
       tput sgr0
     }
 
-    picker() {
-      ${getExe pkgs.git} log --abbrev-commit --oneline \
-        | ${getExe pkgs.fzf} \
-        | cut --fields 1 -d ' '
-    }
-
     fg() {
       then=''${then:-HEAD^}
       now=''${now:-HEAD}
@@ -49,11 +43,11 @@ pkgs.mkShell {
 
       case "$var" in
         1)
-          then=$(picker)
+          read -e -p "then>:" then
           fg
         ;;
         2)
-          now=$(picker)
+          read -e -p "now>:" now
           fg
         ;;
         3)
