@@ -80,14 +80,17 @@ pkgs.mkShell {
 
     PHP_VER=''${PHP_VER:-83}
     FILTER=''${FILTER:-$(state:get:selenium-filter ${session})}
+    STOP_ON_FAILURE=''${STOP_ON_FAILURE:-$(state:get:selenium-stop-on-failure ${session})}
+
     fg() {
       clear
 
-      printf "$(tput setaf 2)%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
+      printf "$(tput setaf 2)%s\n%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
         "1) Run?" \
         "2) Set php version? (current: $PHP_VER)" \
-        "3) Set filter? (current: $FILTER)"
-      read -N 1 -e -p "[1][2][3]>:" var
+        "3) Set filter? (current: $FILTER)" \
+        "4) Toggle stop on failure? (current: $STOP_ON_FAILURE)"
+      read -N 1 -e -p "[1][2][3][4]>:" var
 
       case "$var" in
         1)
@@ -98,8 +101,7 @@ pkgs.mkShell {
           start_services
 
           cd ./tests
-          nix run ${tool}#phpunit$PHP_VER -- $FILTER \
-            --stop-on-failure --stop-on-defect \
+          nix run ${tool}#phpunit$PHP_VER -- $FILTER $STOP_ON_FAILURE \
             --no-interaction --testdox \
             --bootstrap=./bootstrap.php \
             selenium/SeleniumTests.php
@@ -112,6 +114,11 @@ pkgs.mkShell {
           read -e -p "filter>:" FILTER
           [ -z "$FILTER" ] && export FILTER= || export FILTER="--filter $FILTER"
           state:set:selenium-filter ${session} "$FILTER"
+          fg
+        ;;
+        4)
+          [ -z "$STOP_ON_FAILURE" ] && export STOP_ON_FAILURE="--stop-on-failure --stop-on-defect" || export STOP_ON_FAILURE=
+          state:set:selenium-stop-on-failure ${session} "$STOP_ON_FAILURE"
           fg
         ;;
         *)

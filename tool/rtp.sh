@@ -80,6 +80,16 @@ state:get:selenium-filter() {
 }
 
 # <env> <value>
+state:set:selenium-stop-on-failure() {
+  state:set "$1" "selenium-stop-on-failure" "$2"
+}
+
+# <env>
+state:get:selenium-stop-on-failure() {
+  state:get "$1" "selenium-stop-on-failure"
+}
+
+# <env> <value>
 state:set:api-tests-filter() {
   state:set "$1" "api-tests-filter" "$2"
 }
