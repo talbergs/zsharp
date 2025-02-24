@@ -17,10 +17,24 @@ pkgs.mkShell {
     }
 
     fg() {
-      if read -r -p "Start psql client?"
-      then
-        build
-      fi
+      clear
+      echo DB_NAME="${dbname}"
+      echo DB_PORT="${dbport}"
+
+      printf "$(tput setaf 2)%s\n%s$(tput sgr0)\n\n" \
+        "1) Start psql client?"
+      read -N 1 -e -p "[1]>:" var
+
+      case "$var" in
+        1)
+          build
+          fg
+        ;;
+        *)
+          echo "Choose an option."
+          fg
+        ;;
+      esac
     }
   '';
 }

@@ -45,10 +45,23 @@ pkgs.mkShell {
     }
 
     fg() {
-      if read -r -p "Start postgres cluster in ${pgdata}?"
-      then
-        fg_postgres
-      fi
+      clear
+      echo PGDATA="${pgdata}"
+
+      printf "$(tput setaf 2)%s\n%s$(tput sgr0)\n\n" \
+        "1) Start postgres cluster?"
+      read -N 1 -e -p "[1]>:" var
+
+      case "$var" in
+        1)
+          fg_postgres
+          fg
+        ;;
+        *)
+          echo "Choose an option."
+          fg
+        ;;
+      esac
     }
   '';
 }
