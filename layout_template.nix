@@ -267,6 +267,16 @@ pkgs.writeTextFile {
                     "${./proc/selenium.nix}"
             }
         }
+
+        tab name="Static analysis" split_direction="vertical" cwd="{{ $SOURCES }}" {
+            pane command="nix-shell" name="Coding style" {
+                args \
+                    "--run" "fg" \
+                    "--argstr" "tool" "${tool}" \
+                    "--argstr" "upstream" "${nixpkgs}" \
+                    "${./proc/check_coding_style.nix}"
+            }
+        }
     }
   '';
 }

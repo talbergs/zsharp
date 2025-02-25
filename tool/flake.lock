@@ -34,7 +34,7 @@
     "naersk": {
       "inputs": {
         "nixpkgs": [
-          "tg",
+          "tree-grepper",
           "nixpkgs"
         ]
       },
@@ -124,7 +124,7 @@
       "inputs": {
         "nixpkgs": "nixpkgs",
         "phps": "phps",
-        "tg": "tg"
+        "tree-grepper": "tree-grepper"
       }
     },
     "systems": {
@@ -142,7 +142,7 @@
         "type": "github"
       }
     },
-    "tg": {
+    "tree-grepper": {
       "inputs": {
         "flake-utils": "flake-utils",
         "naersk": "naersk",

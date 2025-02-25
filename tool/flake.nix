@@ -4,14 +4,14 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     phps.url = "github:fossar/nix-phps";
-    tg.url = "github:BrianHicks/tree-grepper/8821969c973617874b39042b4abc0f545236b36d";
+    tree-grepper.url = "github:BrianHicks/tree-grepper/8821969c973617874b39042b4abc0f545236b36d";
   };
 
   outputs =
     {
       nixpkgs,
       phps,
-      tg,
+      tree-grepper,
       ...
     }:
     let
@@ -20,7 +20,7 @@
         "aarch64-linux"
         "x86_64-darwin"
         "aarch64-darwin"
-      ] (system: function ({ inherit system; } // (import nixpkgs { inherit system; overlays = [ tg.outputs.overlay.${system} ]; })));
+      ] (system: function ({ inherit system; } // (import nixpkgs { inherit system; overlays = [ tree-grepper.outputs.overlay.${system} ]; })));
     in
     {
 
@@ -32,6 +32,7 @@
             gemdir = ./sass;
           };
           php-picker = import ./util/php-picker.nix { inherit pkgs; };
+          guideliner = import ./guideliner/default.nix { inherit pkgs; };
         }
 
         // (import ./builders/default.nix { inherit pkgs; })
