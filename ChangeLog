@@ -1,3 +1,10 @@
+*******************
+* stable-2025-02-25
+*******************
+
+[Integration tests] Tab
+	Filter option is remembered accross sessions
+
 [Builders:C] Tab
 	Builders work in parallel, sandboxed
 	Artifacts in ~/.cache
@@ -5,3 +12,10 @@
 
 [Runners:C] Tab
 	Added "edit config" and "reset config" to process menus.
+
+[all tabs]
+	Unified menu - user input is always a number
+
+*******************
+* stable-2025-01-21
+*******************
