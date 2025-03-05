@@ -1,3 +1,6 @@
+[Runners:C] Tab
+	Added "proxy process" pane (works in passive mode, sqlite variant)
+
 *******************
 * stable-2025-02-25
 *******************

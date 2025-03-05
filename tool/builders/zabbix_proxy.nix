@@ -8,5 +8,6 @@ pkgs.callPackage ./make_zabbix_build_env.nix
   env = "proxy";
   configureFlags = [
       "--enable-proxy"
+      "--with-sqlite3"
   ];
 }

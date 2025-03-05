@@ -21,6 +21,7 @@ pkgs.mkShell
     openssl
     curl
     pcre2
+    sqlite
   ];
   shellHook = ''
     set -o nounset
@@ -38,7 +39,6 @@ pkgs.mkShell
       ./bootstrap.sh
       ./configure \
         ${configureFlagsStr} \
-        --with-postgresql \
         --prefix="$dst" \
         --with-zlib=${pkgs.zlib} \
         --with-libevent \

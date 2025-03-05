@@ -89,6 +89,24 @@ pkgs.writeTextFile {
                     "${./proc/grc.nix}"
                 }
             }
+            pane split_direction="horizontal" {
+                pane command="nix-shell" name="Proxy process" size="30%" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
+                        "--argstr" "dbname" "{{ $DB_NAME }}" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "${./proc/zabbix_proxy_run.nix}"
+                }
+                pane command="nix-shell" name="Proxy logs" {
+                    args \
+                        "--run" "logfile=$(rtp:dst:proxy {{ $SESSION }})/log;colorizer:c" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "--argstr" "tool" "${tool}" \
+                    "${./proc/grc.nix}"
+                }
+            }
         }
 
         tab name="Database" split_direction="vertical" cwd="{{ $SOURCES }}" {

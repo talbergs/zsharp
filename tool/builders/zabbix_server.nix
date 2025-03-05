@@ -8,5 +8,6 @@ pkgs.callPackage ./make_zabbix_build_env.nix
   env = "server";
   configureFlags = [
       "--enable-server"
+      "--with-postgresql"
   ];
 }
