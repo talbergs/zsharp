@@ -6,7 +6,7 @@
 *******************
 
 [Integration tests] Tab
-	Filter option is remembered accross sessions
+	Filter option is remembered across sessions
 
 [Builders:C] Tab
 	Builders work in parallel, sandboxed
