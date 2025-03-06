@@ -5,10 +5,8 @@ in
 pkgs.callPackage ./make_zabbix_build_env.nix
 {
   inherit pkgs;
-  env = "server";
+  env = "webservice";
   configureFlags = [
-      "--enable-server"
-      "--with-postgresql"
-      "--with-libcurl"
+      "--enable-webservice"
   ];
 }

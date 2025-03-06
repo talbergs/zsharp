@@ -48,6 +48,14 @@ pkgs.writeTextFile {
                         "--argstr" "session" "{{ $SESSION }}" \
                         "${./proc/zabbix_agents.nix}"
                 }
+                pane command="nix-shell" name="Webservice" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
+                        "${./proc/zabbix_webservice.nix}"
+                }
             }
         }
 
@@ -102,6 +110,23 @@ pkgs.writeTextFile {
                 pane command="nix-shell" name="Proxy logs" {
                     args \
                         "--run" "logfile=$(rtp:dst:proxy {{ $SESSION }})/log;colorizer:c" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "--argstr" "tool" "${tool}" \
+                    "${./proc/grc.nix}"
+                }
+            }
+            pane split_direction="horizontal" {
+                pane command="nix-shell" name="Webservice process" size="30%" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "${./proc/zabbix_webservice_run.nix}"
+                }
+                pane command="nix-shell" name="Webservice logs" {
+                    args \
+                        "--run" "logfile=$(rtp:dst:webservice {{ $SESSION }})/log;colorizer:c" \
                         "--argstr" "upstream" "${nixpkgs}" \
                         "--argstr" "tool" "${tool}" \
                     "${./proc/grc.nix}"

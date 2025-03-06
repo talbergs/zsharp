@@ -1,4 +1,10 @@
 [Runners:C] Tab
+	Added webservice
+
+[Builders:C] Tab
+	Added webservice
+
+[Runners:C] Tab
 	Added "proxy process" pane (works in passive mode, sqlite variant)
 
 *******************

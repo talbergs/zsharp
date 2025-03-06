@@ -1,4 +1,4 @@
-{ tool, session, dbname, dbuser, upstream ? <nixpkgs> }:
+{ tool, session, upstream }:
 let pkgs = import upstream { };
 in with pkgs.lib;
 pkgs.mkShell {
@@ -11,29 +11,16 @@ pkgs.mkShell {
     openssl
     curl
     pcre2
+    google-chrome
   ];
   shellHook = ''
     source ${tool}/rtp.sh
-    DST="$(rtp:dst:server ${session})"
+    DST="$(rtp:dst:webservice ${session})"
 
     mk_conf() {
-        LOGFILE="$DST/log" \
-        DB_USER="${dbuser}" \
-        DB_NAME="${dbname}" \
-      nix run ${tool}#server_conf
-    }
-
-    test_config() {
-      [[ ! -e "$DST/conf" ]] && mk_conf > "$DST/conf"
-
-      echo "$DST/conf"
-      cat "$DST/conf"
-
-      tput setaf 3
-      "$DST"/sbin/zabbix_server --test-config -c "$DST/conf"
-      tput sgr0
-
-      read -N 1 -e -p "<press any key>:" var
+      echo "AllowedIP=127.0.0.1,::1"
+      echo "LogFile=$DST/log"
+      echo "DebugLevel=5"
     }
 
     build() {
@@ -42,7 +29,9 @@ pkgs.mkShell {
       echo "$DST/conf"
       cat "$DST/conf"
 
-      "$DST"/sbin/zabbix_server -f -c "$DST/conf"
+      "$DST"/sbin -c "$DST/conf"
+
+      echo goodbye.
     }
 
     fg() {
@@ -51,6 +40,9 @@ pkgs.mkShell {
       echo DST=$DST
       ${getExe pkgs.tree} "$DST"
 
+
+      [[ -e ""$DST"/sbin" ]] && "$DST"/sbin --version || echo not found
+
       [[ -e "$DST/conf" ]] \
         && echo Found config: $DST/conf \
         && tput sgr 2 \
@@ -58,13 +50,13 @@ pkgs.mkShell {
         && tput sgr 0
 
         printf "$(tput setaf 2)%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
-          "1) Start server?" "2) Reset config?" "3) Edit config?" "4) Test config?"
-        read -N 1 -e -p "[1][2][3][4]>:" var
+          "1) Start webservice?" "2) Reset config?" "3) Edit config?"
+        read -N 1 -e -p "[1][2][3]>:" var
 
         case "$var" in
           1)
+            set +e
             build
-            fg
           ;;
           2)
             mk_conf > "$DST/conf"
@@ -90,10 +82,6 @@ pkgs.mkShell {
             else
               $EDITOR "$DST/conf"
             fi
-            fg
-          ;;
-          4)
-            test_config
             fg
           ;;
           *)

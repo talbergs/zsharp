@@ -20,6 +20,11 @@ rtp:dst:agents() {
   echo -n "$(rtp:_make builds/agents/"$1")"
 }
 
+rtp:dst:webservice() {
+  [ -z "$1" ] && echo "<ERROR:rtp:dst:webservice>" && exit 7
+  echo -n "$(rtp:_make builds/webservice/"$1")"
+}
+
 rtp:dst:proxy() {
   [ -z "$1" ] && echo "<ERROR:rtp:dst:proxy>" && exit 7
   echo -n "$(rtp:_make builds/proxy/"$1")"
