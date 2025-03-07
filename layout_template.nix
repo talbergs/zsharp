@@ -315,6 +315,7 @@ pkgs.writeTextFile {
             pane command="nix-shell" name="Coding style" {
                 args \
                     "--run" "fg" \
+                    "--argstr" "session" "{{ $SESSION }}" \
                     "--argstr" "tool" "${tool}" \
                     "--argstr" "upstream" "${nixpkgs}" \
                     "${./proc/check_coding_style.nix}"
