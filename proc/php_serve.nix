@@ -24,10 +24,12 @@ pkgs.mkShell {
 
       ${getExe pkgs.bat} ${uiroot}/conf/zabbix.conf.php
 
-      printf "$(tput setaf 2)%s\n%s\n$(tput sgr0)\n\n" \
+      printf "$(tput setaf 2)%s\n%s\n%s\n%s\n$(tput sgr0)\n\n" \
         "1) Run?" \
+        "2) Reset config?" \
+        "3) Edit config?" \
         "2) Set php version? (current: $PHP_VER)"
-      read -N 1 -e -p "[1][2]>:" var
+      read -N 1 -e -p "[1][2][3][4]>:" var
 
       case "$var" in
         1)
@@ -35,6 +37,32 @@ pkgs.mkShell {
           nix run ${tool}#phpv''${PHP_VER}_serve -- ${uiport} /tmp/php.error.${dbname}.log
         ;;
         2)
+          mk_conf > ${uiroot}/conf/zabbix.conf.php
+          fg
+        ;;
+        3)
+          if [ -z "$EDITOR" ]
+          then
+
+            printf "$(tput setaf 2)%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
+              "1) vim?" \
+              "2) nano?" \
+              "3) mocro? (Modern and intuitive terminal-based text editor)"
+            read -N 1 -e -p "[1][2][3]>:" var
+
+            case "$var" in
+              1) ${getExe pkgs.neovim} "$DST/conf" ;;
+              2) ${getExe pkgs.nano} "$DST/conf" ;;
+              3) ${getExe pkgs.micro} "$DST/conf" ;;
+              *) fg ;;
+            esac
+
+          else
+            $EDITOR ${uiroot}/conf/zabbix.conf.php
+          fi
+          fg
+        ;;
+        4)
           export PHP_VER=$(nix run ${tool}#php-picker)
           fg
         ;;
