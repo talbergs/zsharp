@@ -12,11 +12,15 @@ pkgs.mkShell {
     fg() {
       clear
 
-      printf "$(tput setaf 2)%s\n%s\n%s$(tput sgr0)\n\n" \
+      # TODO: Set files => sumbenu with options, fileset presets or picker.
+      # TODO: add trap for user signals to work accross the whole for loop
+      printf "$(tput setaf 2)%s\n%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
         "1) Find coding style issues?" \
         "2) Set files (current: $FILES)" \
-        "3) Enable verbose mode? (current: $VERBOSE)"
-      read -N 1 -e -p "[1][2][3]>:" var
+        "3) Set files to <preset:all>?" \
+        "4) Set git revision then&now filter (current: )?" \
+        "5) Enable verbose mode? (current: $VERBOSE)"
+      read -N 1 -e -p "[1][2][3][4][5]>:" var
 
       case "$var" in
         1)
@@ -26,7 +30,14 @@ pkgs.mkShell {
             exit 7
           fi
 
-          for file in $FILES
+          files="$FILES"
+          if [ "$files" == "<preset:all>" ]
+          then
+            files_list=( $(${getExe pkgs.fd} --exclude '/vendor/' --exclude '/tests/' --extension php . ./ui) )
+            files="''${files_list[*]}"
+          fi
+
+          for file in $files
           do
             nix run ${tool}#guideliner -- "$file" "$VERBOSE"
           done
@@ -41,6 +52,16 @@ pkgs.mkShell {
           fg
         ;;
         3)
+          export FILES="<preset:all>"
+          state:set:guideliner-files ${session} "$FILES"
+          fg
+        ;;
+        4)
+          echo "NOT YET IMPLEMENTED (sleep 3)"
+          sleep 3
+          fg
+        ;;
+        5)
           [ -z "$VERBOSE" ] && export VERBOSE=yes || export VERBOSE=
           fg
         ;;

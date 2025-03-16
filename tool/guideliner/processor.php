@@ -46,7 +46,7 @@ class Violation
 {
     public static function formCapture(Capture $capture): void
     {
-        echo "Problem in {$capture->file}:{$capture->startrow}";
+        echo "Problem in {$capture->file}:{$capture->startrow}\n";
     }
 }
 
