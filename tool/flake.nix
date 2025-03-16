@@ -32,6 +32,7 @@
             gemdir = ./sass;
           };
           php-picker = import ./util/php-picker.nix { inherit pkgs; };
+          text-edit-picker = import ./util/text-edit-picker.nix { inherit pkgs; };
           guideliner = import ./guideliner/default.nix { inherit pkgs; };
         }
 
