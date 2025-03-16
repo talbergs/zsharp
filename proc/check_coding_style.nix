@@ -9,11 +9,13 @@ pkgs.mkShell {
     FILES=''${FILES:-$(state:get:guideliner-files ${session})}
     VERBOSE=
 
+    halt=
+    trap halt=1 SIGINT
+
     fg() {
       clear
 
       # TODO: Set files => sumbenu with options, fileset presets or picker.
-      # TODO: add trap for user signals to work accross the whole for loop
       printf "$(tput setaf 2)%s\n%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
         "1) Find coding style issues?" \
         "2) Set files (current: $FILES)" \
@@ -39,6 +41,7 @@ pkgs.mkShell {
 
           for file in $files
           do
+            [ ! -z "$halt" ] && break
             nix run ${tool}#guideliner -- "$file" "$VERBOSE"
           done
 
