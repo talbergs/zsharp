@@ -7,6 +7,8 @@ pkgs.mkShell {
     source ${tool}/rtp.sh
 
     FILES=''${FILES:-$(state:get:guideliner-files ${session})}
+    GIT_FILTER_THEN=
+    GIT_FILTER_NOW=
     VERBOSE=
 
     halt=
@@ -15,14 +17,11 @@ pkgs.mkShell {
     fg() {
       clear
 
-      # TODO: Set files => sumbenu with options, fileset presets or picker.
-      printf "$(tput setaf 2)%s\n%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
+      printf "$(tput setaf 2)%s\n%s\n%s$(tput sgr0)\n\n" \
         "1) Find coding style issues?" \
         "2) Set files (current: $FILES)" \
-        "3) Set files to <preset:all>?" \
-        "4) Set git revision then&now filter (current: )?" \
-        "5) Enable verbose mode? (current: $VERBOSE)"
-      read -N 1 -e -p "[1][2][3][4][5]>:" var
+        "3) Enable verbose mode? (current: $VERBOSE)"
+      read -N 1 -e -p "[1][2][3]>:" var
 
       case "$var" in
         1)
@@ -37,6 +36,10 @@ pkgs.mkShell {
           then
             files_list=( $(${getExe pkgs.fd} --exclude '/vendor/' --exclude '/tests/' --extension php . ./ui) )
             files="''${files_list[*]}"
+          elif [ "$files" ~= "<git:" ]
+          then
+            echo "not implemented (sleep 3)"
+            sleep 3
           fi
 
           for file in $files
@@ -48,23 +51,34 @@ pkgs.mkShell {
           echo Process complete. Press any key.
         ;;
         2)
-          files_list=( $(${getExe pkgs.fzf} --multi) )
-          export FILES="''${files_list[*]}"
+          printf "$(tput setaf 2)%s\n%s\n%s\n%s$(tput sgr0)\n\n" \
+            "1) Set <then..now> commit to filter git patches?" \
+            "2) Select files via FZF multi-select (TAB-key)?" \
+            "3) Use <preset:all> (php files excluding ./vendor and ./tests)"
+          read -N 1 -e -p "[1][2][3]>:" var
+
+          case "$var" in
+            1)
+              GIT_FILTER_THEN=
+              GIT_FILTER_NOW=
+              export FILES="<git:HEAD^..HEAD>"
+              echo "not implemented (sleep 3)"
+              sleep 3
+              export FILES=
+            ;;
+            2)
+              files_list=( $(${getExe pkgs.fzf} --multi) )
+              export FILES="''${files_list[*]}"
+            ;;
+            3)
+              export FILES="<preset:all>"
+            ;;
+          esac
 
           state:set:guideliner-files ${session} "$FILES"
           fg
         ;;
         3)
-          export FILES="<preset:all>"
-          state:set:guideliner-files ${session} "$FILES"
-          fg
-        ;;
-        4)
-          echo "NOT YET IMPLEMENTED (sleep 3)"
-          sleep 3
-          fg
-        ;;
-        5)
           [ -z "$VERBOSE" ] && export VERBOSE=yes || export VERBOSE=
           fg
         ;;

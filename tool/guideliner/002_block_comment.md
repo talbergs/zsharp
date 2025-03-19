@@ -1,1 +1,1 @@
- Blank line SHOULD appear before block comments.
+Blank line SHOULD appear before block comments.

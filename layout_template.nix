@@ -311,7 +311,8 @@ pkgs.writeTextFile {
             }
         }
 
-        tab name="Static analysis" split_direction="vertical" cwd="{{ $SOURCES }}" {
+        // focus=true 
+        tab focus=true name="Static analysis" split_direction="vertical" cwd="{{ $SOURCES }}" {
             pane command="nix-shell" name="Coding style" {
                 args \
                     "--run" "fg" \
