@@ -22,7 +22,7 @@ pkgs.mkShell {
       [[ ! -e "${uiroot}/conf/zabbix.conf.php" ]] && mk_conf > ${uiroot}/conf/zabbix.conf.php
       [[ ! -z "${phpver}" ]] && build "${phpver}" && exit 0
 
-      ${getExe pkgs.bat} ${uiroot}/conf/zabbix.conf.php
+      ${getExe pkgs.bat} --pager=never ${uiroot}/conf/zabbix.conf.php
 
       printf "$(tput setaf 2)%s\n%s\n%s\n%s\n$(tput sgr0)\n\n" \
         "1) Run?" \
