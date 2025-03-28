@@ -2,7 +2,7 @@
 (
 	(function_call_expression
 		function: (name) @fnname
-		arguments: (arguments (argument (_) @arg1))
+		arguments: (arguments (argument (_) @arg1) (argument (_)))
 	)
 
 	(#eq? @fnname "define")

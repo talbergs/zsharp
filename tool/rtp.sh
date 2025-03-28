@@ -103,13 +103,3 @@ state:set:api-tests-filter() {
 state:get:api-tests-filter() {
   state:get "$1" "api-tests-filter"
 }
-
-# <env> <value>
-state:set:guideliner-files() {
-  state:set "$1" "guideliner-files" "$2"
-}
-
-# <env>
-state:get:guideliner-files() {
-  state:get "$1" "guideliner-files"
-}

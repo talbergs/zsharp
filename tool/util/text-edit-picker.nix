@@ -4,6 +4,7 @@ pkgs.writeShellScriptBin "text-edit-picker" ''
   if [ -z "$1" ]
   then
     echo "Usage: $(basename $0) <FILE>"
+    exit 7
   fi
 
   file="$1"

@@ -33,6 +33,7 @@
           };
           php-picker = import ./util/php-picker.nix { inherit pkgs; };
           text-edit-picker = import ./util/text-edit-picker.nix { inherit pkgs; };
+          git-patches = import ./util/git-patches.nix { inherit pkgs; };
           guideliner = import ./guideliner/default.nix { inherit pkgs; };
         }
 

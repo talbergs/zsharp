@@ -42,14 +42,8 @@ pkgs.mkShell {
       read -N 1 -e -p "[1][2][3]>:" var
 
       case "$var" in
-        1)
-          read -e -p "then>:" then
-          fg
-        ;;
-        2)
-          read -e -p "now>:" now
-          fg
-        ;;
+        1) read -e -p "then>:" then && fg ;;
+        2) read -e -p "now>:" now && fg ;;
         3)
           printf ".. extracting %s and %s revisions\n" "$then" "$now"
 
@@ -84,10 +78,7 @@ pkgs.mkShell {
 
           printf "\n\nrefs: $(rtp:src:sha $rev_then) $(rtp:src:sha $rev_now)"
         ;;
-        *)
-          echo "Choose an option."
-          fg
-        ;;
+        *) echo "Choose an option." && fg ;;
       esac
     }
   '';

@@ -4,45 +4,74 @@ let
 in
 with pkgs.lib;
 pkgs.writeShellScriptBin "guideliner" ''
-  file="$1"
-  verbose="$2"
-  subcommand="$2"
+  subcommand="$1"
+  file="$2"
+  checkid="$3"
 
-  set +u
-  SINGLE_CHECK="$SINGLE_CHECK"
-  set -u
+  __main__() {
+    case $subcommand in
+      all) has_file && ls_checkids | ${pkgs.findutils}/bin/xargs -I '{}' $0 one $file '{}' ;;
+      one) has_file && has_checkid && run_check ;;
+      ls) ls_checkids ;;
+      ls-picker) ls_picker ;;
+      *) usage ;;
+    esac
+  }
 
-  if [ -z "$file" ]
-  then
-    echo "$0 <FILE> <VERBOSE?>"
-    echo "> OR"
-    echo "$0 -- <subcommand>"
+  usage() {
+    echo "Usage:"
+    echo "  ~ $(basename $0) all <FILE>"
+    echo "  ~ $(basename $0) one <FILE> <CHECKID>"
+    echo "  ~ $(basename $0) ls"
+    echo "  ~ $(basename $0) ls-picker"
     exit 7
-  fi
+  }
 
-  if [ "$file" == "--" ]
-  then
-      case "$subcommand" in
-        check-picker)
-          echo -n "" > /tmp/guideliner-guides
-          for check in ${checks}/*.scm
-          do
-            fname="$(basename $check)"
-            guideline="''${check%scm}md"
-            guideline="$(cat $guideline)"
-            echo "$fname | $guideline" >> /tmp/guideliner-guides
-          done
-          cat /tmp/guideliner-guides \
-            | ${getExe pkgs.fzf} \
-            | ${pkgs.uutils-coreutils-noprefix}/bin/cut -d '.' -f 1
-          exit 0
-        ;;
-        *)
-          $0
-          exit 9
-        ;;
-      esac
-  fi
+  has_file() {
+    [ -z "$file" ] && echo "File must be specified!" && usage
+    [ ! -e "$file" ] && echo "File '$file' must exist!" && usage
+    return 0
+  }
+
+  has_checkid() {
+    [ -z "$checkid" ] && echo "CheckID must be specified!" && usage
+    [ ! -e "$(file_scm)" ] && echo "Unknown checkid($checkid)" \
+      && echo -e "These are available:\n$(ls_checkids)" && exit 7
+    return 0
+  }
+
+  ls_checkids() {
+    for check in ${checks}/*.scm
+    do echo $(basename ''${check%.scm})
+    done
+  }
+
+  ls_picker() {
+    for checkid in $(ls_checkids)
+    do printf '%s| %s\n' $checkid "$(cat $(file_md))"
+    done \
+      | ${getExe pkgs.fzf} \
+      | ${pkgs.uutils-coreutils-noprefix}/bin/cut -d '|' -f 1
+  }
+
+  file_scm() {
+    echo -n ${checks}/$checkid.scm
+  }
+
+  file_md() {
+    echo -n ${checks}/$checkid.md
+  }
+
+  file_php() {
+    processor=${checks}/$checkid.php
+    [ -e "$processor" ] && echo -n $processor || echo ${checks}/processor.php
+  }
+
+  run_check() {
+    grep_php "$(cat $(file_scm))" \
+      | DOCS="$(file_md)" \
+      ${getExe pkgs.php} "$(file_php)"
+  }
 
   grep_php() {
     ${pkgs.tree-grepper}/bin/tree-grepper \
@@ -51,37 +80,5 @@ pkgs.writeShellScriptBin "guideliner" ''
       "$file"
   }
 
-  for check in ${checks}/*.scm
-  do
-    query="$(cat $check)"
-    guideline="''${check%scm}md"
-    processor="''${check%scm}php"
-
-    if [ ! -z "$SINGLE_CHECK" ]
-    then
-      if [ "$SINGLE_CHECK" != "$(basename "''${check%.scm}")" ]
-      then
-        continue
-      fi
-    fi
-
-    if [ ! -e "$processor" ]
-    then
-      processor="${checks}/processor.php"
-    fi
-
-    result=$(
-      grep_php "$query" \
-        | ${getExe pkgs.php} "$processor"
-    )
-
-    if [ ! -z "$result" ]
-    then
-      ${getExe pkgs.glow} "$guideline"
-      echo "$result"
-    elif [ ! -z "$verbose" ]
-    then
-      ${getExe pkgs.glow} "$guideline"
-    fi
-  done
+  __main__
 ''

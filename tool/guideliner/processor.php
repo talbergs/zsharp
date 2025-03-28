@@ -1,5 +1,13 @@
 <?php declare(strict_types=1);
 
+class Env
+{
+    public static function docs(): string
+    {
+        return getenv('DOCS') ?: '';
+    }
+}
+
 class Capture
 {
     public string $name;
@@ -46,7 +54,11 @@ class Violation
 {
     public static function formCapture(Capture $capture): void
     {
-        echo "Problem in {$capture->file}:{$capture->startrow}\n";
+          echo json_encode([
+              'docs' => Env::docs(),
+              'file' => $capture->file,
+              'line' => $capture->startrow
+          ]) . PHP_EOL;
     }
 }
 
