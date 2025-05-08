@@ -10,5 +10,6 @@ pkgs.callPackage ./make_zabbix_build_env.nix
       "--enable-server"
       "--with-postgresql"
       "--with-libcurl"
+      "--with-openssl=${pkgs.openssl.dev}"
   ];
 }
