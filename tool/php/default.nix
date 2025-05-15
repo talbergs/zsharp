@@ -5,7 +5,29 @@ let
   phpunit_phar = ./phpunit-8.5.41.phar;
   dev = ./dev-runtime;
   common = {
+
+    # extensions = ({ enabled, all }: let
+    #   enabledNoSSL = builtins.filter (e: e != all.openssl) enabled;
+    # in enabledNoSSL ++ (with all; [ xdebug spx ]));
+
     extensions = ({ enabled, all }: enabled ++ (with all; [ xdebug spx ]));
+
+    # extensions = ({ enabled, all }: (with all; [
+    #   mysqli
+    #   pgsql
+    #   bcmath
+    #   mbstring
+    #   sockets
+    #   gd
+    #   xmlwriter
+    #   xmlreader
+    #   ctype
+    #   session
+    #   ldap
+    #   gettext
+    #   curl
+    # ]));
+
     extraConfig = ''
       max_execution_time = 300
       post_max_size = 16M
