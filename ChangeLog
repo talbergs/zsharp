@@ -1,3 +1,6 @@
+[Builders:WEB] Tab
+	Using stacked panes for unit tests.
+
 [Runners:WEB] Tab
 	Added "edit config" and "reset config" to process menu.
 

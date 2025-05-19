@@ -235,7 +235,7 @@ pkgs.writeTextFile {
                 }
             }
 
-            pane split_direction="horizontal" {
+            pane stacked=true split_direction="horizontal" {
 
                 pane command="nix-shell" name="phpunit on php 7.4 (for zabbix 6.0+)" {
                     args \
@@ -311,8 +311,7 @@ pkgs.writeTextFile {
             }
         }
 
-        // focus=true 
-        tab focus=true name="Static analysis" split_direction="vertical" cwd="{{ $SOURCES }}" {
+        tab name="Static analysis" split_direction="vertical" cwd="{{ $SOURCES }}" {
             pane command="nix-shell" name="Coding style" {
                 args \
                     "--run" "fg" \
