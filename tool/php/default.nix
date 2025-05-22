@@ -82,18 +82,21 @@ in rec {
   phpv56_serve = build_php_server phpv56;
   phpv74_serve = build_php_server phpv74;
   phpv80_serve = build_php_server phpv80;
+  phpv81_serve = build_php_server phpv81;
   phpv83_serve = build_php_server phpv83;
   phpv84_serve = build_php_server phpv84;
 
   phpunit56 = build_phpunit phpv56;
   phpunit74 = build_phpunit phpv74;
   phpunit80 = build_phpunit phpv80;
+  phpunit81 = build_phpunit phpv81;
   phpunit83 = build_phpunit phpv83;
   phpunit84 = build_phpunit phpv84;
 
   phpv56 = build_php _phps.php56.buildEnv;
   phpv74 = build_php _phps.php74.buildEnv;
   phpv80 = build_php _phps.php80.buildEnv;
+  phpv81 = build_php _phps.php81.buildEnv;
   phpv83 = build_php _phps.php83.buildEnv;
   phpv84 = build_php _phps.php84.buildEnv;
 
