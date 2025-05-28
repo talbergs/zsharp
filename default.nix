@@ -88,6 +88,10 @@ pkgs.writeShellApplication {
       fi
     fi
 
+    set +e
+    (${getExe pkgs.zellij} delete-session -f "$SESSION")
+    set -e
+
     ${getExe pkgs.zellij} \
         --session "$SESSION" \
         --new-session-with-layout <(${getExe layout_generator} \

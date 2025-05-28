@@ -17,7 +17,7 @@ pkgs.writeTextFile {
         }
 
         tab name="Builders:C" split_direction="vertical" cwd="{{ $SOURCES }}" {
-            pane split_direction="horizontal" {
+            pane stacked=true split_direction="horizontal" {
                 pane command="nix-shell" name="Server" {
                     args \
                         "--run" "fg" \
@@ -37,9 +37,6 @@ pkgs.writeTextFile {
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/zabbix_proxy.nix}"
                 }
-            }
-
-            pane split_direction="horizontal" {
                 pane command="nix-shell" name="Agent2" {
                     args \
                         "--run" "fg" \
@@ -60,7 +57,7 @@ pkgs.writeTextFile {
         }
 
         tab name="Runners:C" split_direction="vertical" cwd="{{ $SOURCES }}" {
-            pane split_direction="horizontal" {
+            pane stacked=true split_direction="horizontal" {
                 pane command="nix-shell" name="Server process" size="30%" {
                     args \
                         "--run" "fg" \
@@ -79,8 +76,6 @@ pkgs.writeTextFile {
                         "--argstr" "tool" "${tool}" \
                     "${./proc/grc.nix}"
                 }
-            }
-            pane split_direction="horizontal" {
                 pane command="nix-shell" name="Agent2 process" size="30%" {
                     args \
                         "--run" "fg" \
@@ -96,8 +91,6 @@ pkgs.writeTextFile {
                         "--argstr" "tool" "${tool}" \
                     "${./proc/grc.nix}"
                 }
-            }
-            pane split_direction="horizontal" {
                 pane command="nix-shell" name="Proxy process" size="30%" {
                     args \
                         "--run" "fg" \
@@ -114,8 +107,6 @@ pkgs.writeTextFile {
                         "--argstr" "tool" "${tool}" \
                     "${./proc/grc.nix}"
                 }
-            }
-            pane split_direction="horizontal" {
                 pane command="nix-shell" name="Webservice process" size="30%" {
                     args \
                         "--run" "fg" \
@@ -135,49 +126,51 @@ pkgs.writeTextFile {
         }
 
         tab name="Database" split_direction="vertical" cwd="{{ $SOURCES }}" {
-            pane command="nix-shell" name="Client on {{ $DB_NAME }}" {
-                args \
-                    "--run" "fg" \
-                    "--argstr" "dbport" "{{ $DB_PORT }}" \
-                    "--argstr" "dbname" "{{ $DB_NAME }}" \
-                    "--argstr" "upstream" "${nixpkgs}" \
-                     "--include" "nixpkgs=${nixpkgs}" \
-                    "${./proc/postgres-cli.nix}"
-            }
+            pane stacked=true split_direction="horizontal" {
+                pane command="nix-shell" name="Client on {{ $DB_NAME }}" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "dbport" "{{ $DB_PORT }}" \
+                        "--argstr" "dbname" "{{ $DB_NAME }}" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                         "--include" "nixpkgs=${nixpkgs}" \
+                        "${./proc/postgres-cli.nix}"
+                }
 
-            pane cwd="{{ $SOURCES }}" command="nix-shell" name="Scheme on {{ $DB_NAME }}" {
-                args \
-                    "--run" "fg" \
-                    "--argstr" "dbport" "{{ $DB_PORT }}" \
-                    "--argstr" "dbname" "{{ $DB_NAME }}" \
-                    "--argstr" "session" "{{ $SESSION }}" \
-                    "--argstr" "tool" "${tool}" \
-                    "--argstr" "upstream" "${nixpkgs}" \
-                    "${./proc/postgres-apply.nix}"
-            }
+                pane cwd="{{ $SOURCES }}" command="nix-shell" name="Scheme on {{ $DB_NAME }}" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "dbport" "{{ $DB_PORT }}" \
+                        "--argstr" "dbname" "{{ $DB_NAME }}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "${./proc/postgres-apply.nix}"
+                }
 
-            pane command="nix-shell" name="Cluster" {
-                args \
-                    "--run" "fg" \
-                    "--argstr" "dbport" "{{ $DB_PORT }}" \
-                    "--argstr" "pgdata" "{{ $DB_ROOT }}" \
-                    "--argstr" "upstream" "${nixpkgs}" \
-                    "--include" "nixpkgs=${nixpkgs}" \
-                    "${./proc/postgres.nix}"
-            }
+                pane command="nix-shell" name="Cluster" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "dbport" "{{ $DB_PORT }}" \
+                        "--argstr" "pgdata" "{{ $DB_ROOT }}" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "--include" "nixpkgs=${nixpkgs}" \
+                        "${./proc/postgres.nix}"
+                }
 
-            pane cwd="{{ $SOURCES }}" command="nix-shell" name="Scheme" {
-                args \
-                    "--run" "fg" \
-                    "--argstr" "upstream" "${nixpkgs}" \
-                    "--argstr" "tool" "${tool}" \
-                    "--argstr" "session" "{{ $SESSION }}" \
-                    "${./proc/zabbix_scheme.nix}"
+                pane cwd="{{ $SOURCES }}" command="nix-shell" name="Scheme" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
+                        "${./proc/zabbix_scheme.nix}"
+                }
             }
         }
 
         tab name="Runners:WEB" split_direction="vertical" cwd="{{ $SOURCES }}/ui" {
-            pane split_direction="horizontal" {
+            pane stacked=true split_direction="horizontal" {
                 pane  size="30%" {
                     name "PHP ({{ $PHP_VER }}) at port {{ $UI_PORT }}"
                     command "nix-shell"
@@ -202,15 +195,15 @@ pkgs.writeTextFile {
                         "--argstr" "tool" "${tool}" \
                     "${./proc/grc.nix}"
                 }
-            }
 
-            pane command="nix-shell" name="Symfony var dumper" {
-                args \
-                    "--run" "fg" \
-                    "--argstr" "tool" "${tool}" \
-                    "--argstr" "upstream" "${nixpkgs}" \
-                    "--include" "nixpkgs=${nixpkgs}" \
-                    "${./proc/php_svd.nix}"
+                pane command="nix-shell" name="Symfony var dumper" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "--include" "nixpkgs=${nixpkgs}" \
+                        "${./proc/php_svd.nix}"
+                }
             }
         }
 
@@ -235,8 +228,10 @@ pkgs.writeTextFile {
                 }
             }
 
-            pane stacked=true split_direction="horizontal" {
+        }
 
+        tab name="Tests" split_direction="vertical" cwd="{{ $SOURCES }}" {
+            pane stacked=true split_direction="horizontal" {
                 pane command="nix-shell" name="phpunit on php 7.4 (for zabbix 6.0+)" {
                     args \
                         "--run" "fg" \
@@ -247,7 +242,6 @@ pkgs.writeTextFile {
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/phpunit_run.nix}"
                 }
-
                 pane command="nix-shell" name="phpunit on php 8.0 (for zabbix 7.0+)" {
                     args \
                         "--run" "fg" \
@@ -258,7 +252,6 @@ pkgs.writeTextFile {
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/phpunit_run.nix}"
                 }
-
                 pane command="nix-shell" name="phpunit on php 8.3 (for zabbix ~)" {
                     args \
                         "--run" "fg" \
@@ -269,7 +262,6 @@ pkgs.writeTextFile {
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/phpunit_run.nix}"
                 }
-
                 pane command="nix-shell" name="phpunit on php 8.4 (for zabbix ^)" {
                     args \
                         "--run" "fg" \
@@ -280,34 +272,42 @@ pkgs.writeTextFile {
                         "--include" "nixpkgs=${nixpkgs}" \
                         "${./proc/phpunit_run.nix}"
                 }
-
-            }
-        }
-
-        tab name="Integration tests" split_direction="vertical" cwd="{{ $SOURCES }}" {
-            pane command="nix-shell" name="API tests" {
-                args \
-                    "--run" "fg" \
-                    "--argstr" "tool" "${tool}" \
-                    "--argstr" "session" "{{ $SESSION }}" \
-                    "--argstr" "uiroot" "{{ $UI_ROOT }}" \
-                    "--argstr" "dbport" "{{ $DB_PORT }}" \
-                    "--argstr" "dbname" "{{ $DB_NAME }}-test-api" \
-                    "--argstr" "dbuser" "{{ $DB_USER }}" \
-                    "--argstr" "upstream" "${nixpkgs}" \
-                    "${./proc/api_tests.nix}"
-            }
-            pane command="nix-shell" name="Selenium tests" {
-                args \
-                    "--run" "fg" \
-                    "--argstr" "tool" "${tool}" \
-                    "--argstr" "session" "{{ $SESSION }}" \
-                    "--argstr" "uiroot" "{{ $UI_ROOT }}" \
-                    "--argstr" "dbport" "{{ $DB_PORT }}" \
-                    "--argstr" "dbname" "{{ $DB_NAME }}-test-selenium" \
-                    "--argstr" "dbuser" "{{ $DB_USER }}" \
-                    "--argstr" "upstream" "${nixpkgs}" \
-                    "${./proc/selenium.nix}"
+                pane command="nix-shell" name="* API tests" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
+                        "--argstr" "uiroot" "{{ $UI_ROOT }}" \
+                        "--argstr" "dbport" "{{ $DB_PORT }}" \
+                        "--argstr" "dbname" "{{ $DB_NAME }}-test-api" \
+                        "--argstr" "dbuser" "{{ $DB_USER }}" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "${./proc/api_tests.nix}"
+                }
+                pane command="nix-shell" name="* Selenium tests" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
+                        "--argstr" "uiroot" "{{ $UI_ROOT }}" \
+                        "--argstr" "dbport" "{{ $DB_PORT }}" \
+                        "--argstr" "dbname" "{{ $DB_NAME }}-test-selenium" \
+                        "--argstr" "dbuser" "{{ $DB_USER }}" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "${./proc/selenium.nix}"
+                }
+                pane command="nix-shell" name="* Integration tests (api tests)" {
+                    args \
+                        "--run" "fg" \
+                        "--argstr" "tool" "${tool}" \
+                        "--argstr" "session" "{{ $SESSION }}" \
+                        "--argstr" "uiroot" "{{ $UI_ROOT }}" \
+                        "--argstr" "dbport" "{{ $DB_PORT }}" \
+                        "--argstr" "dbname" "{{ $DB_NAME }}-test-api" \
+                        "--argstr" "dbuser" "{{ $DB_USER }}" \
+                        "--argstr" "upstream" "${nixpkgs}" \
+                        "${./proc/api_tests.nix}"
+                }
             }
         }
 
