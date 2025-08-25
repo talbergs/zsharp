@@ -53,7 +53,7 @@ pkgs.writeShellApplication {
     DB_NAME=''${DB_NAME:-$SESSION}
     DB_PORT=''${DB_PORT:-5432}
     DB_ROOT=''${DB_ROOT:-$HOME/dbcluster}
-    DB_USER=$(whoami)
+    DB_USER=martins.talbergs
     PHP_V84=''${PHP_V84:-}
     PHP_V83=''${PHP_V83:-}
     PHP_V80=''${PHP_V80:-}

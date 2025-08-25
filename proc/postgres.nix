@@ -12,6 +12,7 @@ pkgs.mkShell {
     cowsay
   ];
   shellHook = ''
+    export PATH=/home/martins.talbergs/.nix-profile/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:$PATH
     export PGDATA=${pgdata}
     fg_postgres() {
       trap "pg_ctl -D $PGDATA stop && cowsay server stopped on $PGDATA:${dbport}" EXIT
