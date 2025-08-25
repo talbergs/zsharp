@@ -1,6 +1,0 @@
-{
-  "require-dev": {
-    "phpunit/phpunit-selenium": "^3.0",
-    "php-webdriver/webdriver": "^1.11"
-  }
-}
